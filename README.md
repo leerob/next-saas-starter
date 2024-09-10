@@ -3,10 +3,6 @@
 > [!IMPORTANT]  
 > This repo is a work-in-progress and not ready for 👀
 
-## Why?
-
-I wanted to make a minimal template with cookie-based auth, user/pass login, and Stripe integration.
-
 ## Stack
 
 - Next.js
@@ -23,3 +19,7 @@ I wanted to make a minimal template with cookie-based auth, user/pass login, and
   - Dashboard Page
 - User/Pass Authentication
 - `useUser` hook
+
+## Why?
+
+I wanted to make a minimal template with cookie-based auth, user/pass login, and Stripe integration.
