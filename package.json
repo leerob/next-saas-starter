@@ -30,6 +30,8 @@
     "postgres": "^3.4.4",
     "react": "19.0.0-rc-7771d3a7-20240827",
     "react-dom": "19.0.0-rc-7771d3a7-20240827",
+    "server-only": "^0.0.1",
+    "stripe": "^16.10.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "tailwindcss-react-aria-components": "1.1.5",
