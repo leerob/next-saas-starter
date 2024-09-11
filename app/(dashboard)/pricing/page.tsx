@@ -64,10 +64,12 @@ export default function PricingPage() {
               <span className="text-gray-700">Recognition in Our Credits</span>
             </li>
           </ul>
-          <Button className="w-full bg-white hover:bg-gray-100 text-black border border-gray-200 rounded-full flex items-center justify-center">
-            Get Started
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
+          <form action={checkoutAction}>
+            <Button className="w-full bg-white hover:bg-gray-100 text-black border border-gray-200 rounded-full flex items-center justify-center">
+              Get Started
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </form>
         </div>
       </div>
     </main>

@@ -1,13 +1,10 @@
-import Stripe from 'stripe';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db/drizzle';
 import { users } from '@/lib/db/schema';
 import { setSession } from '@/lib/auth/session';
 import { NextRequest, NextResponse } from 'next/server';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20',
-});
+import { stripe } from '@/lib/payments/stripe';
+import Stripe from 'stripe';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -36,6 +33,22 @@ export async function GET(request: NextRequest) {
       throw new Error('No subscription found for this session.');
     }
 
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+      expand: ['items.data.price.product'],
+    });
+
+    const plan = subscription.items.data[0]?.price;
+
+    if (!plan) {
+      throw new Error('No plan found for this subscription.');
+    }
+
+    const productId = (plan.product as Stripe.Product).id;
+
+    if (!productId) {
+      throw new Error('No product ID found for this subscription.');
+    }
+
     const username = session.client_reference_id;
     if (!username) {
       throw new Error("No username found in session's client_reference_id.");
@@ -56,6 +69,7 @@ export async function GET(request: NextRequest) {
       .set({
         stripeCustomerId: customerId,
         stripeSubscriptionId: subscriptionId,
+        stripeProductId: productId,
         updatedAt: new Date(),
       })
       .where(eq(users.id, user[0].id));
