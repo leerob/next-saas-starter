@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { useUser } from '@/lib/auth';
+import { openCustomerPortal } from '@/lib/payments/actions';
 
 export default function DashboardPage() {
   let user = useUser();
@@ -33,12 +34,12 @@ export default function DashboardPage() {
           your own version to get started building your SaaS.
         </li>
       </ol>
-      <div className="mt-12">
+      <form action={openCustomerPortal} className="mt-12">
         <Button className="w-full bg-white hover:bg-gray-100 text-black border border-gray-200 rounded-full flex items-center justify-center">
           Manage Subscription
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
-      </div>
+      </form>
     </main>
   );
 }

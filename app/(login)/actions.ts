@@ -8,6 +8,7 @@ import { comparePasswords, hashPassword, setSession } from '@/lib/auth/session';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
+import { createCheckoutSession } from '@/lib/payments/stripe';
 
 const userSchema = z.object({
   username: z.string().min(3).max(50),
@@ -38,14 +39,20 @@ export async function signIn(_: any, formData: FormData) {
 
   const isPasswordValid = await comparePasswords(
     password,
-    user[0].passwordHash,
+    user[0].passwordHash
   );
 
   if (!isPasswordValid) {
     return { error: 'Incorrect password. Please try again.' };
   }
 
-  setSession(user[0]);
+  await setSession(user[0]);
+
+  const redirectTo = formData.get('redirect') as string | null;
+  if (redirectTo === 'checkout') {
+    return createCheckoutSession(user[0]);
+  }
+
   redirect('/dashboard');
 }
 
@@ -79,8 +86,13 @@ export async function signUp(_: any, formData: FormData) {
   };
 
   await db.insert(users).values(newUser);
+  await setSession(newUser);
 
-  setSession(existingUser[0]);
+  const redirectTo = formData.get('redirect') as string | null;
+  if (redirectTo === 'checkout') {
+    return createCheckoutSession(newUser);
+  }
+
   redirect('/dashboard');
 }
 

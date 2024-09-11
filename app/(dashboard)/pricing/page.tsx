@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { createCheckoutSession } from "@/lib/payments/stripe";
-import { ArrowRight, Check } from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { checkoutAction } from '@/lib/payments/actions';
+import { ArrowRight, Check } from 'lucide-react';
 
 export default function PricingPage() {
   return (
@@ -10,7 +10,7 @@ export default function PricingPage() {
           <h2 className="text-2xl font-medium text-gray-900 mb-2">Base</h2>
           <p className="text-sm text-gray-600 mb-4">with 7 day free trial</p>
           <p className="text-4xl font-medium text-gray-900 mb-6">
-            $8{" "}
+            $8{' '}
             <span className="text-xl font-normal text-gray-600">
               per user / month
             </span>
@@ -31,7 +31,7 @@ export default function PricingPage() {
               <span className="text-gray-700">Unlimited Workspace Members</span>
             </li>
           </ul>
-          <form action={createCheckoutSession}>
+          <form action={checkoutAction}>
             <Button className="w-full bg-white hover:bg-gray-100 text-black border border-gray-200 rounded-full flex items-center justify-center">
               Get Started
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -43,7 +43,7 @@ export default function PricingPage() {
           <h2 className="text-2xl font-medium text-gray-900 mb-2">Plus</h2>
           <p className="text-sm text-gray-600 mb-4">with 7 day free trial</p>
           <p className="text-4xl font-medium text-gray-900 mb-6">
-            $12{" "}
+            $12{' '}
             <span className="text-xl font-normal text-gray-600">
               per user / month
             </span>

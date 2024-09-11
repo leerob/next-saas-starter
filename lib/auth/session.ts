@@ -65,7 +65,6 @@ export async function getUser() {
   }
 
   const sessionData = await decrypt(sessionCookie.value);
-  console.log(sessionData);
   if (
     !sessionData ||
     !sessionData.user ||

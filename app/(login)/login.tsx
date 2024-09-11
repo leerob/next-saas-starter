@@ -1,7 +1,8 @@
 'use client';
 
-import { useFormState as useActionState } from 'react-dom';
 import Link from 'next/link';
+import { useActionState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,9 +10,11 @@ import { CircleIcon, Loader2 } from 'lucide-react';
 import { signIn, signUp } from './actions';
 
 export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect');
   const [state, formAction, pending] = useActionState(
     mode === 'signin' ? signIn : signUp,
-    { error: '' },
+    { error: '' }
   );
 
   return (
@@ -29,6 +32,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <form className="space-y-6" action={formAction}>
+          <input type="hidden" name="redirect" value={redirect || ''} />
           <div>
             <Label
               htmlFor="username"
@@ -75,7 +79,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
             </div>
           </div>
 
-          {state.error && (
+          {state?.error && (
             <div className="text-red-500 text-sm">{state.error}</div>
           )}
 
@@ -115,7 +119,9 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
 
           <div className="mt-6">
             <Link
-              href={mode === 'signin' ? '/sign-up' : '/sign-in'}
+              href={`${mode === 'signin' ? '/sign-up' : '/sign-in'}${
+                redirect ? `?redirect=${redirect}` : ''
+              }`}
               className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
             >
               {mode === 'signin'

@@ -1,5 +1,5 @@
 {
-  "id": "0b7ddd96-eca3-4285-920f-1de6ca58ed08",
+  "id": "81f83e42-cfba-4203-af39-f4fa42c71994",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -39,6 +39,18 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "stripe_customer_id": {
+          "name": "stripe_customer_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stripe_subscription_id": {
+          "name": "stripe_subscription_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -50,6 +62,20 @@
           "nullsNotDistinct": false,
           "columns": [
             "username"
+          ]
+        },
+        "users_stripe_customer_id_unique": {
+          "name": "users_stripe_customer_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "stripe_customer_id"
+          ]
+        },
+        "users_stripe_subscription_id_unique": {
+          "name": "users_stripe_subscription_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "stripe_subscription_id"
           ]
         }
       }
