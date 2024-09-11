@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import { useUser } from '@/lib/auth';
 import { openCustomerPortal } from '@/lib/payments/actions';
+import { useFormStatus } from 'react-dom';
 
 export default function DashboardPage() {
   let user = useUser();
@@ -35,11 +36,32 @@ export default function DashboardPage() {
         </li>
       </ol>
       <form action={openCustomerPortal} className="mt-12">
-        <Button className="w-full bg-white hover:bg-gray-100 text-black border border-gray-200 rounded-full flex items-center justify-center">
-          Manage Subscription
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
+        <SubmitButton />
       </form>
     </main>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      type="submit"
+      disabled={pending}
+      className="w-full bg-white hover:bg-gray-100 text-black border border-gray-200 rounded-full flex items-center justify-center"
+    >
+      {pending ? (
+        <>
+          <Loader2 className="animate-spin mr-2 h-4 w-4" />
+          Loading...
+        </>
+      ) : (
+        <>
+          Manage Subscription
+          <ArrowRight className="ml-2 h-4 w-4" />
+        </>
+      )}
+    </Button>
   );
 }
