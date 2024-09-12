@@ -7,14 +7,15 @@ const protectedRoutes = ['/dashboard'];
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const sessionCookie = request.cookies.get('session');
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+
+  if (isProtectedRoute && !sessionCookie) {
+    return NextResponse.redirect(new URL('/sign-in', request.url));
+  }
 
   let res = NextResponse.next();
-
-  if (protectedRoutes.some((route) => pathname.startsWith(route))) {
-    if (!sessionCookie) {
-      return NextResponse.redirect(new URL('/sign-in', request.url));
-    }
-  }
 
   if (sessionCookie) {
     try {
@@ -28,12 +29,14 @@ export async function middleware(request: NextRequest) {
           expires: expiresInOneDay.toISOString(),
         }),
         httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
         expires: expiresInOneDay,
       });
     } catch (error) {
       console.error('Error updating session:', error);
       res.cookies.delete('session');
-      if (protectedRoutes.some((route) => pathname.startsWith(route))) {
+      if (isProtectedRoute) {
         return NextResponse.redirect(new URL('/sign-in', request.url));
       }
     }
