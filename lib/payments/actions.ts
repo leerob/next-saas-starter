@@ -14,7 +14,7 @@ export async function checkoutAction(formData: FormData) {
 export async function openCustomerPortal() {
   const user = await getUser();
   if (!user || !user.stripeCustomerId) {
-    throw new Error('User not found or not subscribed');
+    redirect('/pricing');
   }
 
   let configuration: Stripe.BillingPortal.Configuration;
