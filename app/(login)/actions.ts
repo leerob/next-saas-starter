@@ -85,19 +85,22 @@ export async function signUp(_: any, formData: FormData) {
     passwordHash,
   };
 
-  await db.insert(users).values(newUser);
-  await setSession(newUser);
+  const [createdUser] = await db.insert(users).values(newUser).returning();
+
+  if (!createdUser) {
+    return { error: 'Failed to create user. Please try again.' };
+  }
+
+  await setSession(createdUser);
 
   const redirectTo = formData.get('redirect') as string | null;
   if (redirectTo === 'checkout') {
-    return createCheckoutSession(newUser);
+    return createCheckoutSession(createdUser);
   }
 
   redirect('/dashboard');
 }
 
 export async function signOut() {
-  cookies().set('session', '', { expires: new Date(0) });
-  revalidatePath('/', 'layout');
-  redirect('/');
+  cookies().delete('session');
 }

@@ -1,10 +1,10 @@
-import { compare, hash } from "bcryptjs";
-import { SignJWT, jwtVerify } from "jose";
-import { cookies } from "next/headers";
-import { NewUser } from "@/lib/db/schema";
-import { getUserById } from "../db/queries";
+import { compare, hash } from 'bcryptjs';
+import { SignJWT, jwtVerify } from 'jose';
+import { cookies } from 'next/headers';
+import { NewUser } from '@/lib/db/schema';
+import { getUserById } from '../db/queries';
 
-const secretKey = "REPLACE_ME";
+const secretKey = 'REPLACE_ME';
 const key = new TextEncoder().encode(secretKey);
 const SALT_ROUNDS = 10;
 
@@ -14,7 +14,7 @@ export async function hashPassword(password: string) {
 
 export async function comparePasswords(
   plainTextPassword: string,
-  hashedPassword: string,
+  hashedPassword: string
 ) {
   return compare(plainTextPassword, hashedPassword);
 }
@@ -26,21 +26,21 @@ type SessionData = {
 
 export async function encrypt(payload: SessionData) {
   return await new SignJWT(payload)
-    .setProtectedHeader({ alg: "HS256" })
+    .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime("1 day from now")
+    .setExpirationTime('1 day from now')
     .sign(key);
 }
 
 export async function decrypt(input: string) {
   const { payload } = await jwtVerify(input, key, {
-    algorithms: ["HS256"],
+    algorithms: ['HS256'],
   });
   return payload as SessionData;
 }
 
 export async function getSession() {
-  const session = cookies().get("session")?.value;
+  const session = cookies().get('session')?.value;
   if (!session) return null;
   return await decrypt(session);
 }
@@ -52,15 +52,15 @@ export async function setSession(user: NewUser) {
     expires: expiresInOneDay.toISOString(),
   };
   const encryptedSession = await encrypt(session);
-  cookies().set("session", encryptedSession, {
+  cookies().set('session', encryptedSession, {
     expires: expiresInOneDay,
     httpOnly: true,
   });
 }
 
 export async function getUser() {
-  const sessionCookie = cookies().get("session");
-  if (!sessionCookie) {
+  const sessionCookie = cookies().get('session');
+  if (!sessionCookie || !sessionCookie.value) {
     return null;
   }
 
@@ -68,7 +68,7 @@ export async function getUser() {
   if (
     !sessionData ||
     !sessionData.user ||
-    typeof sessionData.user.id !== "number"
+    typeof sessionData.user.id !== 'number'
   ) {
     return null;
   }
