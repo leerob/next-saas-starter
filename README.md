@@ -1,7 +1,7 @@
 # Next.js SaaS Starter
 
 > [!IMPORTANT]  
-> This repo is a work-in-progress and not ready for 👀
+> This repo is a work-in-progress. Please open an issue if you see something wrong!
 
 This is a starter template for building a SaaS application using **Next.js** with support for authentication, Stripe integration for payments, and a dashboard for logged-in users.
 
