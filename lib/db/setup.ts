@@ -3,6 +3,7 @@ import { promises as fs } from 'node:fs';
 import { promisify } from 'node:util';
 import readline from 'node:readline';
 import crypto from 'node:crypto';
+import path from 'node:path';
 
 const execAsync = promisify(exec);
 
@@ -29,11 +30,12 @@ async function checkStripeCLI() {
     console.error(
       'Stripe CLI is not installed. Please install it and try again.'
     );
-    console.log('To install Stripe CLI, run the following commands:');
-    console.log('```');
-    console.log('brew install stripe/stripe-cli/stripe');
-    console.log('stripe login');
-    console.log('```');
+    console.log('To install Stripe CLI, follow these steps:');
+    console.log('1. Visit: https://docs.stripe.com/stripe-cli');
+    console.log(
+      '2. Download and install the Stripe CLI for your operating system'
+    );
+    console.log('3. After installation, run: stripe login');
     console.log('After installation, please run this setup script again.');
     process.exit(1);
   }
@@ -69,6 +71,9 @@ async function createStripeWebhook(): Promise<string> {
     console.error(
       'Failed to create Stripe webhook. Check your Stripe CLI installation and permissions.'
     );
+    console.log(
+      'Note: On Windows, you may need to run this script as an administrator.'
+    );
     throw error;
   }
 }
@@ -84,7 +89,7 @@ async function writeEnvFile(envVars: Record<string, string>) {
     .map(([key, value]) => `${key}=${value}`)
     .join('\n');
 
-  await fs.writeFile('.env.local', envContent);
+  await fs.writeFile(path.join(process.cwd(), '.env.local'), envContent);
   console.log('.env.local file created with the necessary variables.');
 }
 
