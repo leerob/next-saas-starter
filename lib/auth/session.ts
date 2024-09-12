@@ -4,8 +4,7 @@ import { cookies } from 'next/headers';
 import { NewUser } from '@/lib/db/schema';
 import { getUserById } from '../db/queries';
 
-const secretKey = 'REPLACE_ME';
-const key = new TextEncoder().encode(secretKey);
+const key = new TextEncoder().encode(process.env.AUTH_SECRET);
 const SALT_ROUNDS = 10;
 
 export async function hashPassword(password: string) {

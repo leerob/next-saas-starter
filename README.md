@@ -13,7 +13,7 @@ This is a starter template for building a SaaS application using **Next.js** wit
 - **Logged-In Experience:**
   - Dashboard Page
 - User authentication (cookie-based, email/password)
-- Stripe integration for payments
+- Stripe integration for payments (Checkout & Customer Portal)
 - `useUser` hook for managing user data
 
 ## Tech Stack
@@ -30,7 +30,6 @@ git clone https://github.com/leerob/next-saas-starter
 pnpm install
 pnpm db:setup
 pnpm db:seed
-pnpm dev
 ```
 
 ## Running Locally
