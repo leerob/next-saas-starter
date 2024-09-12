@@ -5,9 +5,10 @@ import { getUser } from '@/lib/auth/session';
 import { createCheckoutSession, stripe } from './stripe';
 import Stripe from 'stripe';
 
-export async function checkoutAction() {
+export async function checkoutAction(formData: FormData) {
   const user = await getUser();
-  await createCheckoutSession(user);
+  const priceId = formData.get('priceId') as string;
+  await createCheckoutSession({ user, priceId });
 }
 
 export async function openCustomerPortal() {

@@ -7,7 +7,6 @@ import { users, type NewUser } from '@/lib/db/schema';
 import { comparePasswords, hashPassword, setSession } from '@/lib/auth/session';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import { revalidatePath } from 'next/cache';
 import { createCheckoutSession } from '@/lib/payments/stripe';
 
 const userSchema = z.object({
@@ -50,7 +49,8 @@ export async function signIn(_: any, formData: FormData) {
 
   const redirectTo = formData.get('redirect') as string | null;
   if (redirectTo === 'checkout') {
-    return createCheckoutSession(user[0]);
+    const priceId = formData.get('priceId') as string;
+    return createCheckoutSession({ user: user[0], priceId });
   }
 
   redirect('/dashboard');
@@ -95,7 +95,8 @@ export async function signUp(_: any, formData: FormData) {
 
   const redirectTo = formData.get('redirect') as string | null;
   if (redirectTo === 'checkout') {
-    return createCheckoutSession(createdUser);
+    const priceId = formData.get('priceId') as string;
+    return createCheckoutSession({ user: createdUser, priceId });
   }
 
   redirect('/dashboard');
