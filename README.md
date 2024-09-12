@@ -98,3 +98,10 @@ In your Vercel project settings (or during deployment), add all the necessary en
 2. `STRIPE_SECRET_KEY`: Use your Stripe secret key for the production environment.
 3. `STRIPE_WEBHOOK_SECRET`: Use the webhook secret from the production webhook you created in step 1.
 4. `DATABASE_URL`: Set this to your production database URL.
+
+## Other Templates
+
+While this template is intentionally minimal and to be used as a learning resource, there are other paid versions in the community which are more full-featured:
+
+- https://achromatic.dev
+- https://shipfa.st
