@@ -8,7 +8,7 @@ import { openCustomerPortal } from '@/lib/payments/actions';
 import { useFormStatus } from 'react-dom';
 
 export default function DashboardPage() {
-  let user = useUser();
+  let { user } = useUser();
 
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
