@@ -2,14 +2,12 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { encrypt, decrypt } from '@/lib/auth/session';
 
-const protectedRoutes = ['/dashboard'];
+const protectedRoutes = '/dashboard';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const sessionCookie = request.cookies.get('session');
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
+  const isProtectedRoute = pathname.startsWith(protectedRoutes);
 
   if (isProtectedRoute && !sessionCookie) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
