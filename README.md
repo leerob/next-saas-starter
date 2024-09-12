@@ -24,6 +24,7 @@ This is a starter template for building a SaaS application using **Next.js** wit
 - **Database**: [Postgres](https://www.postgresql.org/)
 - **ORM**: [Drizzle](https://orm.drizzle.team/)
 - **Payments**: [Stripe](https://stripe.com/)
+- **UI LIbrary**: [shadcn/ui](https://ui.shadcn.com/)
 
 ## Getting Started
 
