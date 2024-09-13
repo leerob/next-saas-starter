@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { useUser } from '@/lib/auth';
-import { openCustomerPortal } from '@/lib/payments/actions';
+import { customerPortalAction } from '@/lib/payments/actions';
 import { useFormStatus } from 'react-dom';
 
 export default function DashboardPage() {
@@ -35,7 +35,7 @@ export default function DashboardPage() {
           your own version to get started building your SaaS.
         </li>
       </ol>
-      <form action={openCustomerPortal} className="mt-12">
+      <form action={customerPortalAction} className="mt-12">
         <SubmitButton />
       </form>
     </main>
