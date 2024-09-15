@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1726416807212,
-      "tag": "0000_tearful_moon_knight",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1726429576127,
-      "tag": "0001_spotty_sunset_bain",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1726442357532,
-      "tag": "0002_naive_stepford_cuckoos",
+      "when": 1726443359662,
+      "tag": "0000_soft_the_anarchist",
       "breakpoints": true
     }
   ]
