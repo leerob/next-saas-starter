@@ -24,14 +24,14 @@ Fun fact: the majority of the UI for this application was built with [v0](https:
 
 ## Features
 
-- **Logged-Out Experience:**
-  - Home Page
-  - Pricing Page
-- **Logged-In Experience:**
-  - Dashboard Page
-- User authentication (cookie-based, email/password)
-- Stripe integration for payments (Checkout & Customer Portal)
-- `useUser` hook for managing user data
+- Marketing landing page (`/`) with animated Terminal element
+- Pricing page (`/`) which connects to Stripe Checkout
+- Dashboard pages with CRUD operations on users/teams
+- Subscription management with Stripe Customer Portal
+- Email/password authentication with JWTs stored to cookies
+- Global middleware to protect logged-in routes
+- Local middleware to protect Server Actions or validate Zod schemas
+- Activity logging system for any user events
 
 ## Tech Stack
 

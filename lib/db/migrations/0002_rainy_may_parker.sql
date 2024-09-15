@@ -1,1 +1,0 @@
-ALTER TABLE "users" DROP CONSTRAINT "users_stripe_product_id_unique";

@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1726013083799,
-      "tag": "0000_past_ezekiel",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1726076295942,
-      "tag": "0001_past_cerise",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1726086143327,
-      "tag": "0002_rainy_may_parker",
+      "when": 1726443359662,
+      "tag": "0000_soft_the_anarchist",
       "breakpoints": true
     }
   ]
