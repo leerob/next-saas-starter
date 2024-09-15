@@ -41,7 +41,7 @@ async function createStripeProducts() {
 async function seed() {
   await db.insert(users).values([
     {
-      username: 'test',
+      email: 'test@test.com',
       // admin123
       passwordHash:
         '$2a$10$7JNtY2uXCS.QoyoH8i.mRu1g4sUtK5ausmU.5MjBVRCm.hVflCw0y',

@@ -2,7 +2,6 @@ import { compare, hash } from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { NewUser } from '@/lib/db/schema';
-import { getUserById } from '../db/queries';
 
 const key = new TextEncoder().encode(process.env.AUTH_SECRET);
 const SALT_ROUNDS = 10;
@@ -57,26 +56,4 @@ export async function setSession(user: NewUser) {
     secure: true, // Only over HTTPS
     sameSite: 'strict', // Prevent CSRF
   });
-}
-
-export async function getUser() {
-  const sessionCookie = cookies().get('session');
-  if (!sessionCookie || !sessionCookie.value) {
-    return null;
-  }
-
-  const sessionData = await decrypt(sessionCookie.value);
-  if (
-    !sessionData ||
-    !sessionData.user ||
-    typeof sessionData.user.id !== 'number'
-  ) {
-    return null;
-  }
-
-  if (new Date(sessionData.expires) < new Date()) {
-    return null;
-  }
-
-  return getUserById(sessionData.user.id);
 }

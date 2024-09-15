@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { CircleIcon, LogOut } from 'lucide-react';
+import { CircleIcon, Home, LogOut } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useUser } from '@/lib/auth';
 import { signOut } from '@/app/(login)/actions';
 import { useRouter } from 'next/navigation';
@@ -44,13 +44,22 @@ function Header() {
             <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <DropdownMenuTrigger asChild>
                 <Avatar className="cursor-pointer size-9">
-                  <AvatarImage
-                    src={`https://unavatar.io/${user.username}`}
-                    alt={user.username}
-                  />
+                  <AvatarImage alt={user.name || ''} />
+                  <AvatarFallback>
+                    {user.email
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')}
+                  </AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="p-0">
+                <DropdownMenuItem className="w-full cursor-pointer m-1">
+                  <Link href="/dashboard" className="flex w-full items-center">
+                    <Home className="mr-2 h-4 w-4" />
+                    <span>Dashboard</span>
+                  </Link>
+                </DropdownMenuItem>
                 <form action={handleSignOut} className="p-1">
                   <button type="submit" className="flex w-full">
                     <DropdownMenuItem className="w-full cursor-pointer">
@@ -77,7 +86,7 @@ function Header() {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <section>
+    <section className="flex flex-col min-h-screen">
       <Header />
       {children}
     </section>
