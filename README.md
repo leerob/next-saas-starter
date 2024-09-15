@@ -27,6 +27,7 @@ Fun fact: the majority of the UI for this application was built with [v0](https:
 - Marketing landing page (`/`) with animated Terminal element
 - Pricing page (`/`) which connects to Stripe Checkout
 - Dashboard pages with CRUD operations on users/teams
+- Basic RBAC with Owner and Member roles
 - Subscription management with Stripe Customer Portal
 - Email/password authentication with JWTs stored to cookies
 - Global middleware to protect logged-in routes
