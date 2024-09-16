@@ -50,9 +50,9 @@ export default function HomePage() {
                 </svg>
               </div>
               <div className="mt-5">
-                <h3 className="text-lg font-medium text-gray-900">
+                <h2 className="text-lg font-medium text-gray-900">
                   Next.js and React
-                </h3>
+                </h2>
                 <p className="mt-2 text-base text-gray-500">
                   Leverage the power of modern web technologies for optimal
                   performance and developer experience.
@@ -65,9 +65,9 @@ export default function HomePage() {
                 <Database className="h-6 w-6" />
               </div>
               <div className="mt-5">
-                <h3 className="text-lg font-medium text-gray-900">
+                <h2 className="text-lg font-medium text-gray-900">
                   Postgres and Drizzle ORM
-                </h3>
+                </h2>
                 <p className="mt-2 text-base text-gray-500">
                   Robust database solution with an intuitive ORM for efficient
                   data management and scalability.
@@ -80,9 +80,9 @@ export default function HomePage() {
                 <CreditCard className="h-6 w-6" />
               </div>
               <div className="mt-5">
-                <h3 className="text-lg font-medium text-gray-900">
+                <h2 className="text-lg font-medium text-gray-900">
                   Stripe Integration
-                </h3>
+                </h2>
                 <p className="mt-2 text-base text-gray-500">
                   Seamless payment processing and subscription management with
                   industry-leading Stripe integration.
