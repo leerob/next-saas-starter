@@ -2,7 +2,7 @@ import { desc, and, eq, isNull } from 'drizzle-orm';
 import { db } from './drizzle';
 import { activityLogs, teamMembers, teams, users } from './schema';
 import { cookies } from 'next/headers';
-import { decrypt } from '@/lib/auth/session';
+import { verifyToken } from '@/lib/auth/session';
 
 export async function getUser() {
   const sessionCookie = cookies().get('session');
@@ -10,7 +10,7 @@ export async function getUser() {
     return null;
   }
 
-  const sessionData = await decrypt(sessionCookie.value);
+  const sessionData = await verifyToken(sessionCookie.value);
   if (
     !sessionData ||
     !sessionData.user ||

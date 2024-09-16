@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { encrypt, decrypt } from '@/lib/auth/session';
+import { signToken, verifyToken } from '@/lib/auth/session';
 
 const protectedRoutes = '/dashboard';
 
@@ -17,12 +17,12 @@ export async function middleware(request: NextRequest) {
 
   if (sessionCookie) {
     try {
-      const parsed = await decrypt(sessionCookie.value);
+      const parsed = await verifyToken(sessionCookie.value);
       const expiresInOneDay = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
       res.cookies.set({
         name: 'session',
-        value: await encrypt({
+        value: await signToken({
           ...parsed,
           expires: expiresInOneDay.toISOString(),
         }),
