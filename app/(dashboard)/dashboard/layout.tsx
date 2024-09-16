@@ -2,9 +2,26 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useSelectedLayoutSegments } from "next/navigation";
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Users, Settings, Shield, Activity, Menu } from 'lucide-react';
+
+export function Breadcrumbs() {
+  const segments = ["dashboard", ...useSelectedLayoutSegments()];
+  return (
+    <ul className="flex gap-1 p-4">
+      {segments.map((segment, index) => (
+        <li key={index}>
+          <Link href={`/${segments.slice(0, index + 1).join("/")}`} className=" hover:text-secondary-foreground/75">
+            {segment}
+          </Link>{" "}
+          {index < segments.length - 1 && "/"}
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 export default function DashboardLayout({
   children,
@@ -66,7 +83,10 @@ export default function DashboardLayout({
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto p-0 lg:p-4">{children}</main>
+        <main className="flex-1 overflow-y-auto p-0 lg:p-4">
+          <Breadcrumbs />
+          {children}
+        </main>
       </div>
     </div>
   );
