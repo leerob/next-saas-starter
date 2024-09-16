@@ -10,6 +10,7 @@ export function Terminal() {
     'git clone https://github.com/leerob/next-saas-starter',
     'pnpm install',
     'pnpm db:setup',
+    'pnpm db:migrate',
     'pnpm db:seed',
     'pnpm dev 🎉',
   ];
