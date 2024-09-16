@@ -22,10 +22,43 @@ function question(query: string): Promise<string> {
 }
 
 async function checkStripeCLI() {
-  console.log('Step 1: Checking if Stripe CLI is installed...');
+  console.log(
+    'Step 1: Checking if Stripe CLI is installed and authenticated...'
+  );
   try {
     await execAsync('stripe --version');
     console.log('Stripe CLI is installed.');
+
+    // Check if Stripe CLI is authenticated
+    try {
+      await execAsync('stripe config --list');
+      console.log('Stripe CLI is authenticated.');
+    } catch (error) {
+      console.log(
+        'Stripe CLI is not authenticated or the authentication has expired.'
+      );
+      console.log('Please run: stripe login');
+      const answer = await question(
+        'Have you completed the authentication? (y/n): '
+      );
+      if (answer.toLowerCase() !== 'y') {
+        console.log(
+          'Please authenticate with Stripe CLI and run this script again.'
+        );
+        process.exit(1);
+      }
+
+      // Verify authentication after user confirms login
+      try {
+        await execAsync('stripe config --list');
+        console.log('Stripe CLI authentication confirmed.');
+      } catch (error) {
+        console.error(
+          'Failed to verify Stripe CLI authentication. Please try again.'
+        );
+        process.exit(1);
+      }
+    }
   } catch (error) {
     console.error(
       'Stripe CLI is not installed. Please install it and try again.'
@@ -36,7 +69,9 @@ async function checkStripeCLI() {
       '2. Download and install the Stripe CLI for your operating system'
     );
     console.log('3. After installation, run: stripe login');
-    console.log('After installation, please run this setup script again.');
+    console.log(
+      'After installation and authentication, please run this setup script again.'
+    );
     process.exit(1);
   }
 }
@@ -84,13 +119,13 @@ function generateAuthSecret(): string {
 }
 
 async function writeEnvFile(envVars: Record<string, string>) {
-  console.log('Step 6: Writing environment variables to .env.local');
+  console.log('Step 6: Writing environment variables to .env');
   const envContent = Object.entries(envVars)
     .map(([key, value]) => `${key}=${value}`)
     .join('\n');
 
-  await fs.writeFile(path.join(process.cwd(), '.env.local'), envContent);
-  console.log('.env.local file created with the necessary variables.');
+  await fs.writeFile(path.join(process.cwd(), '.env'), envContent);
+  console.log('.env file created with the necessary variables.');
 }
 
 async function main() {
