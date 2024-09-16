@@ -45,5 +45,10 @@
     "tailwindcss-react-aria-components": "1.1.5",
     "typescript": "^5.6.2",
     "zod": "^3.23.8"
+  },
+  "overrides": {
+    "react": "19.0.0-rc-7771d3a7-20240827",
+    "react-dom": "19.0.0-rc-7771d3a7-20240827",
+    "react-is": "19.0.0-rc-7771d3a7-20240827"
   }
 }
