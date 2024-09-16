@@ -48,6 +48,7 @@ Fun fact: the majority of the UI for this application was built with [v0](https:
 git clone https://github.com/leerob/next-saas-starter
 pnpm install
 pnpm db:setup
+pnpm db:migrate
 pnpm db:seed
 ```
 
