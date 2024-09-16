@@ -51,6 +51,8 @@ pnpm db:setup
 pnpm db:seed
 ```
 
+Running the setup script will create your `.env` file locally.
+
 ## Running Locally
 
 Once you have set up the environment variables and installed dependencies, run the development server:

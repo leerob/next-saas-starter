@@ -84,13 +84,13 @@ function generateAuthSecret(): string {
 }
 
 async function writeEnvFile(envVars: Record<string, string>) {
-  console.log('Step 6: Writing environment variables to .env.local');
+  console.log('Step 6: Writing environment variables to .env');
   const envContent = Object.entries(envVars)
     .map(([key, value]) => `${key}=${value}`)
     .join('\n');
 
-  await fs.writeFile(path.join(process.cwd(), '.env.local'), envContent);
-  console.log('.env.local file created with the necessary variables.');
+  await fs.writeFile(path.join(process.cwd(), '.env'), envContent);
+  console.log('.env file created with the necessary variables.');
 }
 
 async function main() {
