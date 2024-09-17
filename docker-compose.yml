@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:15
+    image: postgres:16
     container_name: next_saas_starter_postgres
     environment:
       POSTGRES_DB: postgres
