@@ -39,7 +39,7 @@ async function createStripeProducts() {
 }
 
 async function seed() {
-  const email = "test@test.com";
+  const email = 'test@test.com';
 
   const [user] = await db
     .insert(users)
@@ -48,24 +48,24 @@ async function seed() {
         email: email,
         // admin123
         passwordHash:
-          "$2a$10$7JNtY2uXCS.QoyoH8i.mRu1g4sUtK5ausmU.5MjBVRCm.hVflCw0y",
+          '$2a$10$7JNtY2uXCS.QoyoH8i.mRu1g4sUtK5ausmU.5MjBVRCm.hVflCw0y',
       },
     ])
     .returning();
 
-  console.log("Initial user created.");
+  console.log('Initial user created.');
 
   const [team] = await db
     .insert(teams)
     .values({
-      name: "Test Team",
+      name: 'Test Team',
     })
     .returning();
 
   await db.insert(teamMembers).values({
     teamId: team.id,
     userId: user.id,
-    role: "owner",
+    role: 'owner',
   });
 
   await createStripeProducts();
