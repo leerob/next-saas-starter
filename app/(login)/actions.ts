@@ -64,7 +64,7 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
     .limit(1);
 
   if (userWithTeam.length === 0) {
-    return { error: 'User not found. Please try again.' };
+    return { error: 'Invalid email or password. Please try again.' };
   }
 
   const { user: foundUser, team: foundTeam } = userWithTeam[0];
@@ -75,7 +75,7 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
   );
 
   if (!isPasswordValid) {
-    return { error: 'Incorrect password. Please try again.' };
+    return { error: 'Invalid email or password. Please try again.' };
   }
 
   await Promise.all([
@@ -108,7 +108,7 @@ export const signUp = validatedAction(signUpSchema, async (data, formData) => {
     .limit(1);
 
   if (existingUser.length > 0) {
-    return { error: 'User already exists.' };
+    return { error: 'Failed to create user. Please try again.' };
   }
 
   const passwordHash = await hashPassword(password);
