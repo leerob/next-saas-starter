@@ -18,14 +18,14 @@ For example, React now has built in looks like `useActionState` to handle inline
 
 We're able to fetch the user from our Postgres database in the root layout, but _not_ await the `Promise`. Instead, we forward the `Promise` to a React context provider, where we can "unwrap" it and awaited the streamed in data. This means we can have the best of both worlds: easy code to fetch data from our database (e.g. `getUser()`) and a React hook we can use in Client Components (e.g. `useUser()`).
 
-Fun fact: the majority of the UI for this application was built with [v0](https://v0.dev) 🤯
+Fun fact: the majority of the UI for this application was built with [v0](https://v0.dev) 🤯 [More details here](https://x.com/leeerob/status/1835777934361084316) if you want to learn about this repo.
 
 </details>
 
 ## Features
 
 - Marketing landing page (`/`) with animated Terminal element
-- Pricing page (`/`) which connects to Stripe Checkout
+- Pricing page (`/pricing`) which connects to Stripe Checkout
 - Dashboard pages with CRUD operations on users/teams
 - Basic RBAC with Owner and Member roles
 - Subscription management with Stripe Customer Portal

@@ -6,7 +6,9 @@ import { client, db } from './drizzle';
 dotenv.config();
 
 async function main() {
-  await migrate(db, { migrationsFolder: path.join(__dirname, './migrations') });
+  await migrate(db, {
+    migrationsFolder: path.join(process.cwd(), './migrations'),
+  });
   console.log(`Migrations complete`);
   await client.end();
 }
