@@ -47,12 +47,32 @@ Fun fact: the majority of the UI for this application was built with [v0](https:
 ```bash
 git clone https://github.com/leerob/next-saas-starter
 pnpm install
+```
+
+### Local DB Setup
+
+You can use Docker to run a Postgres instance locally.
+
+```bash
+docker compose up -d
+```
+
+The default docker-compose postgres connection string is `postgres://postgres:postgres@localhost:54322/postgres`.
+
+Alternatively, you can install Postgres locally or connect to a [remote Postgres database](https://vercel.com/marketplace?category=databases).
+
+Then, run the setup script:
+
+```bash
 pnpm db:setup
 pnpm db:migrate
 pnpm db:seed
 ```
 
-Running the setup script will create your `.env` file locally.
+Running the setup script will create your `.env` file locally, run the migrations, and seed the database with a default user and team.
+
+test user: `test@test.com`
+test password: `admin123`
 
 ## Running Locally
 
