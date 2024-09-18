@@ -1,14 +1,11 @@
 # Next.js SaaS Starter
 
-> [!IMPORTANT]  
-> This repo is a work-in-progress. Please open an issue if you see something wrong!
-
 This is a starter template for building a SaaS application using **Next.js** with support for authentication, Stripe integration for payments, and a dashboard for logged-in users.
 
 **Demo: [https://next-saas-start.vercel.app/](https://next-saas-start.vercel.app/)**
 
 <details>
-  <summary>Wait, why make this?</summary>
+  <summary>Why did I make this?</summary>
   
   In 2020, I made a course called "React 2025" which showed how to build a SaaS application with Next.js, Stripe, and other tools.
 
@@ -77,6 +74,7 @@ Finally, run the Next.js development server:
 ```bash
 pnpm dev
 ```
+
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the app in action.
 
 Optionally, you can listen for Stripe webhooks locally through their CLI to handle subscription change events:
