@@ -40,7 +40,7 @@ Fun fact: the majority of the UI for this application was built with [v0](https:
 - **Database**: [Postgres](https://www.postgresql.org/)
 - **ORM**: [Drizzle](https://orm.drizzle.team/)
 - **Payments**: [Stripe](https://stripe.com/)
-- **UI LIbrary**: [shadcn/ui](https://ui.shadcn.com/)
+- **UI Library**: [shadcn/ui](https://ui.shadcn.com/)
 
 ## Getting Started
 
