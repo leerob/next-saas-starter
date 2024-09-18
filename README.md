@@ -49,46 +49,40 @@ git clone https://github.com/leerob/next-saas-starter
 pnpm install
 ```
 
-### Local DB Setup
+## Running Locally
 
-You can use Docker to run a Postgres instance locally.
-
-```bash
-docker compose up -d
-```
-
-The default docker-compose postgres connection string is `postgres://postgres:postgres@localhost:54322/postgres`.
-
-Alternatively, you can install Postgres locally or connect to a [remote Postgres database](https://vercel.com/marketplace?category=databases).
-
-Then, run the setup script:
+Use the included setup script to create your `.env` file:
 
 ```bash
 pnpm db:setup
+```
+
+Then, run the database migrations and seed the database with a default user and team:
+
+```bash
 pnpm db:migrate
 pnpm db:seed
 ```
 
-Running the setup script will create your `.env` file locally, run the migrations, and seed the database with a default user and team.
+This will create the following user and team:
 
-test user: `test@test.com`
-test password: `admin123`
+- User: `test@test.com`
+- Password: `admin123`
 
-## Running Locally
+You can, of course, create new users as well through `/sign-up`.
 
-Once you have set up the environment variables and installed dependencies, run the development server:
+Finally, run the Next.js development server:
 
 ```bash
 pnpm dev
 ```
+Open [http://localhost:3000](http://localhost:3000) in your browser to see the app in action.
 
-Then, also listen for Stripe webhooks locally through their CLI:
+Optionally, you can listen for Stripe webhooks locally through their CLI to handle subscription change events:
 
 ```bash
 stripe listen --forward-to localhost:3000/api/stripe/webhook
 ```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the app in action.
 
 ## Testing Payments
 
