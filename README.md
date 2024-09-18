@@ -48,6 +48,10 @@ Fun fact: the majority of the UI for this application was built with [v0](https:
 git clone https://github.com/leerob/next-saas-starter
 cd next-saas-starter
 pnpm install
+```
+**Install Stripe CLI**: [Stipe CLI](https://docs.stripe.com/stripe-cli)
+
+``` bash
 pnpm db:setup
 pnpm db:migrate
 pnpm db:seed
