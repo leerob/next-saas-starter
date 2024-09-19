@@ -59,6 +59,11 @@ Then, run the database migrations and seed the database with a default user and 
 
 ```bash
 pnpm db:migrate
+
+// if you have remote DB URL, make sure to run push to populate tables remotely
+pnpm drizzle-kit push
+
+// populate tables with start data
 pnpm db:seed
 ```
 
