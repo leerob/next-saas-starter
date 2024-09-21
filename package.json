@@ -38,6 +38,7 @@
     "postgres": "^3.4.5",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "next-themes": "^0.3.0",
     "server-only": "^0.0.1",
     "stripe": "^17.6.0",
     "tailwind-merge": "^3.0.1",
