@@ -3,7 +3,6 @@ import type { Metadata, Viewport } from 'next';
 import { Manrope } from 'next/font/google';
 import { UserProvider } from '@/lib/auth';
 import { getUser } from '@/lib/db/queries';
-import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
   title: 'Next.js SaaS Starter',
@@ -29,14 +28,7 @@ export default function RootLayout({
       className={`bg-white dark:bg-gray-950 text-black dark:text-white ${manrope.className}`}
     >
       <body className="min-h-[100dvh] bg-gray-50 dark:bg-gray-950">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-            <UserProvider userPromise={userPromise}>{children}</UserProvider>
-        </ThemeProvider>
+        <UserProvider userPromise={userPromise}>{children}</UserProvider>
       </body>
     </html>
   );
