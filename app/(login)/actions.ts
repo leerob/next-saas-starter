@@ -9,14 +9,22 @@ import {
   teams,
   teamMembers,
   activityLogs,
+  oneTimeTokens,
   type NewUser,
   type NewTeam,
   type NewTeamMember,
   type NewActivityLog,
+  type NewOneTimeToken,
   ActivityType,
   invitations,
+  OneTimeTokenType,
 } from '@/lib/db/schema';
-import { comparePasswords, hashPassword, setSession } from '@/lib/auth/session';
+import {
+  comparePasswords,
+  hashPassword,
+  setSession,
+  generateRandomToken,
+} from '@/lib/auth/session';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { createCheckoutSession } from '@/lib/payments/stripe';
@@ -25,6 +33,10 @@ import {
   validatedAction,
   validatedActionWithUser,
 } from '@/lib/auth/middleware';
+import {
+  sendResetPasswordEmail,
+  sendInvitationEmail,
+} from '@/lib/email/email-service';
 
 async function logActivity(
   teamId: number | null | undefined,
@@ -414,9 +426,178 @@ export const inviteTeamMember = validatedActionWithUser(
       ActivityType.INVITE_TEAM_MEMBER
     );
 
-    // TODO: Send invitation email and include ?inviteId={id} to sign-up URL
-    // await sendInvitationEmail(email, userWithTeam.team.name, role)
+    const team = await db
+      .select()
+      .from(teams)
+      .where(eq(teams.id, userWithTeam.teamId))
+      .limit(1);
+
+    await sendInvitationEmail(
+      email,
+      user.name || user.email,
+      team[0].name,
+      role
+    );
 
     return { success: 'Invitation sent successfully' };
+  }
+);
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
+export const forgotPassword = validatedAction(
+  forgotPasswordSchema,
+  async (data) => {
+    const { email } = data;
+
+    const user = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    console.log('user', user);
+
+    const userWithTeam = await getUserWithTeam(user[0].id);
+
+    console.log('userWithTeam', userWithTeam);
+
+    await logActivity(
+      userWithTeam?.teamId,
+      user[0].id,
+      ActivityType.FORGOT_PASSWORD
+    );
+
+    console.log('userWithTeam?.teamId', userWithTeam?.teamId);
+
+    const successMessage =
+      'If an account with that email exists, a password reset email will be sent.';
+
+    const errorMessage =
+      'Failed to send password reset email. Please try again.';
+
+    if (user.length === 0) {
+      return {
+        success: successMessage,
+      };
+    }
+
+    const resetToken = await generateRandomToken();
+    const resetTokenHash = await hashPassword(resetToken);
+
+    const newPasswordResetToken: NewOneTimeToken = {
+      userId: user[0].id,
+      token: resetTokenHash,
+      type: OneTimeTokenType.RESET_PASSWORD,
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+    };
+    const [passwordResetToken] = await db
+      .insert(oneTimeTokens)
+      .values(newPasswordResetToken)
+      .returning();
+
+    console.log('passwordResetToken', passwordResetToken);
+
+    if (!passwordResetToken) {
+      return {
+        error: errorMessage,
+      };
+    }
+
+    const emailResponse = await sendResetPasswordEmail(
+      email,
+      user[0].name || 'Friend',
+      passwordResetToken.token
+    );
+
+    console.log('emailResponse', emailResponse);
+
+    if (emailResponse.error) {
+      return {
+        error: errorMessage,
+      };
+    }
+
+    return { success: successMessage };
+  }
+);
+
+const resetPasswordSchema = z.object({
+  token: z.string(),
+  password: z.string().min(8).max(100),
+});
+
+export const resetPassword = validatedAction(
+  resetPasswordSchema,
+  async (data) => {
+    const { token, password } = data;
+    // const tokenHash = await hashPassword(token);
+    const tokenHash = token;
+
+    console.log('tokenHash', tokenHash);
+
+    const passwordResetToken = await db
+      .select()
+      .from(oneTimeTokens)
+      .where(
+        and(
+          eq(oneTimeTokens.token, tokenHash),
+          eq(oneTimeTokens.type, OneTimeTokenType.RESET_PASSWORD)
+        )
+      )
+      .limit(1);
+
+    console.log('passwordResetToken', passwordResetToken);
+
+    if (passwordResetToken.length === 0) {
+      return { error: 'Invalid or expired password reset token.' };
+    }
+    // Check if the token is expired
+    if (passwordResetToken[0].expiresAt < new Date()) {
+      return { error: 'Password reset token has expired.' };
+    }
+
+    console.log('passwordResetToken[0].userId', passwordResetToken[0].userId);
+
+    const user = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, passwordResetToken[0].userId))
+      .limit(1);
+
+    console.log('user', user);
+
+    if (user.length === 0) {
+      return { error: 'User not found.' };
+    }
+
+    const newPasswordHash = await hashPassword(password);
+    const userWithTeam = await getUserWithTeam(user[0].id);
+
+    console.log('userWithTeam', userWithTeam);
+
+    await Promise.all([
+      db
+        .update(users)
+        .set({ passwordHash: newPasswordHash })
+        .where(eq(users.id, user[0].id)),
+      db
+        .delete(oneTimeTokens)
+        .where(
+          and(
+            eq(oneTimeTokens.id, passwordResetToken[0].id),
+            eq(oneTimeTokens.userId, user[0].id)
+          )
+        ),
+      logActivity(
+        userWithTeam?.teamId,
+        user[0].id,
+        ActivityType.UPDATE_PASSWORD
+      ),
+    ]);
+
+    return { success: 'Password reset successfully.' };
   }
 );

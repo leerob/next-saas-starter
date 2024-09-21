@@ -14,25 +14,19 @@ import {
   Section,
   Text,
   Tailwind,
-} from "@react-email/components";
-import * as React from "react";
-import { CircleIcon } from "lucide-react";
+} from '@react-email/components';
+import * as React from 'react';
+import { CircleIcon } from 'lucide-react';
 interface ResetPasswordEmailProps {
   username?: string;
-  userImage?: string;
-  userEmail?: string;
+  email?: string;
   resetPasswordLink?: string;
-  resetFromIp?: string;
-  resetFromLocation?: string;
 }
 
 export const ResetPasswordEmail = ({
-  username = "alanturing",
-  userImage = "https://demo.react.email/static/vercel-user.png",
-  userEmail = "alan.turing@example.com",
-  resetPasswordLink = "https://vercel.com/teams/invite/foo",
-  resetFromIp = "204.13.186.218",
-  resetFromLocation = "São Paulo, Brazil",
+  username = 'alanturing',
+  email = 'alanturing@acme.com',
+  resetPasswordLink = 'https://vercel.com/teams/invite/foo',
 }: ResetPasswordEmailProps) => {
   const previewText = `Reset your password on ACME`;
 
@@ -70,7 +64,7 @@ export const ResetPasswordEmail = ({
               </Button>
             </Section>
             <Text className='text-black text-[14px] leading-[24px]'>
-              or copy and paste this URL into your browser:{" "}
+              or copy and paste this URL into your browser:{' '}
               <Link
                 href={resetPasswordLink}
                 className='text-blue-600 no-underline'
@@ -80,12 +74,11 @@ export const ResetPasswordEmail = ({
             </Text>
             <Hr className='border border-solid border-[#eaeaea] my-[26px] mx-0 w-full' />
             <Text className='text-[#666666] text-[12px] leading-[24px]'>
-              This password reset email was intended for{" "}
-              <span className='text-black'>{username}</span>. This email was
-              sent from <span className='text-black'>{resetFromIp}</span>{" "}
-              located in <span className='text-black'>{resetFromLocation}</span>
-              . If you were not expecting this password reset email, you can
-              ignore this email. To keep your account secure, please{" "}
+              This password reset email was intended for{' '}
+              <span className='text-black'>{username}</span> and sent to{' '}
+              <span className='text-black'>{email}</span>. If you were not
+              expecting this password reset email, you can ignore this email. To
+              keep your account secure, please{' '}
               <strong>do not forward this email to anyone</strong>.
             </Text>
           </Container>
