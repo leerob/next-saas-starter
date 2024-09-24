@@ -43,8 +43,8 @@ const MODES = {
   resetPassword: {
     title: 'Reset Password',
     buttonText: 'Reset password',
-    altLink: { text: 'Forgot password?', href: '/forgot-password' },
-    altPrompt: 'Need to reset your password?',
+    altLink: { text: 'Sign in', href: '/sign-in' },
+    altPrompt: 'Remembered your password?',
   },
 };
 
@@ -84,27 +84,28 @@ export function Login({
           {mode === 'resetPassword' && (
             <input type='hidden' name='token' value={token || ''} />
           )}
-
-          <div>
-            <Label
-              htmlFor='email'
-              className='block text-sm font-medium text-gray-700'
-            >
-              Email
-            </Label>
-            <div className='mt-1'>
-              <Input
-                id='email'
-                name='email'
-                type='email'
-                autoComplete='email'
-                required
-                maxLength={50}
-                className='appearance-none rounded-full relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm'
-                placeholder='Enter your email'
-              />
+          {mode !== 'resetPassword' && (
+            <div>
+              <Label
+                htmlFor='email'
+                className='block text-sm font-medium text-gray-700'
+              >
+                Email
+              </Label>
+              <div className='mt-1'>
+                <Input
+                  id='email'
+                  name='email'
+                  type='email'
+                  autoComplete='email'
+                  required
+                  maxLength={50}
+                  className='appearance-none rounded-full relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm'
+                  placeholder='Enter your email'
+                />
+              </div>
             </div>
-          </div>
+          )}
 
           {(mode === 'signin' ||
             mode === 'signup' ||
@@ -131,6 +132,7 @@ export function Login({
                   placeholder='Enter your password'
                 />
               </div>
+
               {mode === 'signin' && (
                 <div className='text-sm mt-2'>
                   <Link
@@ -146,6 +148,9 @@ export function Login({
 
           {state?.error && (
             <div className='text-red-500 text-sm'>{state.error}</div>
+          )}
+          {state?.success && (
+            <div className='text-green-500 text-sm'>{state.success}</div>
           )}
 
           <div>

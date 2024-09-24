@@ -14,13 +14,13 @@ import {
 } from '@react-email/components';
 import { CircleIcon } from 'lucide-react';
 import * as React from 'react';
-
+import { getURL } from '@/lib/utils';
 interface InviteUserEmailProps {
   firstName?: string;
   invitedByUsername?: string;
   invitedByEmail?: string;
   teamName?: string;
-  inviteLink?: string;
+  inviteId?: string;
   role?: string;
 }
 
@@ -29,10 +29,11 @@ export const InviteUserEmail = ({
   invitedByUsername = 'ACME',
   invitedByEmail = 'acme@acme.com',
   teamName = 'ACME Team',
-  inviteLink = 'https://vercel.com/teams/invite/foo',
+  inviteId = undefined,
   role = 'member',
 }: InviteUserEmailProps) => {
   const previewText = `Join ${invitedByUsername} on Vercel`;
+  const inviteLink = `${getURL()}/sign-up?inviteId=${inviteId}`;
 
   return (
     <Html>
@@ -45,12 +46,12 @@ export const InviteUserEmail = ({
               <Link href='/' className='flex items-center'>
                 <CircleIcon className='h-[32px] w-[32px] text-orange-500' />
                 <span className='ml-[10px] text-[24px] font-semibold text-gray-900'>
-                  ACME
+                  {teamName}
                 </span>
               </Link>
             </Section>
             <Heading className='text-black text-[24px] font-normal text-center p-0 my-[30px] mx-0'>
-              Join <strong>{teamName}</strong> on <strong>Vercel</strong>
+              Join <strong>{teamName}</strong> on <strong>ACME</strong>
             </Heading>
             <Text className='text-black text-[14px] leading-[24px]'>
               Hello {firstName},

@@ -4,8 +4,11 @@ import { ResetPasswordEmail } from '@/emails/reset-password';
 
 export async function sendInvitationEmail(
   to: string,
+  firstName: string,
   invitedByUsername: string,
+  invitedByEmail: string,
   teamName: string,
+  inviteId: string,
   role: string
 ) {
   const subject = `${invitedByUsername} has invited you to join ${teamName} on ACME`;
@@ -19,11 +22,12 @@ export async function sendInvitationEmail(
     to,
     subject,
     react: InviteUserEmail({
-      firstName: 'John',
-      invitedByUsername: 'ACME',
-      invitedByEmail: 'acme@acme.com',
-      teamName: 'ACME Team',
-      inviteLink: 'https://vercel.com/teams/invite/foo',
+      firstName: firstName,
+      invitedByUsername: invitedByUsername,
+      invitedByEmail: invitedByEmail,
+      teamName: teamName,
+      inviteId: inviteId,
+      role: role,
     }),
   });
 

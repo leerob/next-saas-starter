@@ -412,13 +412,16 @@ export const inviteTeamMember = validatedActionWithUser(
     }
 
     // Create a new invitation
-    await db.insert(invitations).values({
-      teamId: userWithTeam.teamId,
-      email,
-      role,
-      invitedBy: user.id,
-      status: 'pending',
-    });
+    const newInvitation = await db
+      .insert(invitations)
+      .values({
+        teamId: userWithTeam.teamId,
+        email,
+        role,
+        invitedBy: user.id,
+        status: 'pending',
+      })
+      .returning();
 
     await logActivity(
       userWithTeam.teamId,
@@ -435,8 +438,11 @@ export const inviteTeamMember = validatedActionWithUser(
     await sendInvitationEmail(
       email,
       user.name || user.email,
+      user.name || user.email,
+      user.email,
       team[0].name,
-      role
+      newInvitation[0].id.toString(),
+      newInvitation[0].role
     );
 
     return { success: 'Invitation sent successfully' };
@@ -458,11 +464,7 @@ export const forgotPassword = validatedAction(
       .where(eq(users.email, email))
       .limit(1);
 
-    console.log('user', user);
-
     const userWithTeam = await getUserWithTeam(user[0].id);
-
-    console.log('userWithTeam', userWithTeam);
 
     await logActivity(
       userWithTeam?.teamId,
@@ -470,10 +472,8 @@ export const forgotPassword = validatedAction(
       ActivityType.FORGOT_PASSWORD
     );
 
-    console.log('userWithTeam?.teamId', userWithTeam?.teamId);
-
     const successMessage =
-      'If an account with that email exists, a password reset email will be sent.';
+      'If an account exists, a password reset email will be sent.';
 
     const errorMessage =
       'Failed to send password reset email. Please try again.';
@@ -498,8 +498,6 @@ export const forgotPassword = validatedAction(
       .values(newPasswordResetToken)
       .returning();
 
-    console.log('passwordResetToken', passwordResetToken);
-
     if (!passwordResetToken) {
       return {
         error: errorMessage,
@@ -511,8 +509,6 @@ export const forgotPassword = validatedAction(
       user[0].name || 'Friend',
       passwordResetToken.token
     );
-
-    console.log('emailResponse', emailResponse);
 
     if (emailResponse.error) {
       return {
@@ -536,8 +532,6 @@ export const resetPassword = validatedAction(
     // const tokenHash = await hashPassword(token);
     const tokenHash = token;
 
-    console.log('tokenHash', tokenHash);
-
     const passwordResetToken = await db
       .select()
       .from(oneTimeTokens)
@@ -549,8 +543,6 @@ export const resetPassword = validatedAction(
       )
       .limit(1);
 
-    console.log('passwordResetToken', passwordResetToken);
-
     if (passwordResetToken.length === 0) {
       return { error: 'Invalid or expired password reset token.' };
     }
@@ -559,15 +551,11 @@ export const resetPassword = validatedAction(
       return { error: 'Password reset token has expired.' };
     }
 
-    console.log('passwordResetToken[0].userId', passwordResetToken[0].userId);
-
     const user = await db
       .select()
       .from(users)
       .where(eq(users.id, passwordResetToken[0].userId))
       .limit(1);
-
-    console.log('user', user);
 
     if (user.length === 0) {
       return { error: 'User not found.' };
@@ -575,8 +563,6 @@ export const resetPassword = validatedAction(
 
     const newPasswordHash = await hashPassword(password);
     const userWithTeam = await getUserWithTeam(user[0].id);
-
-    console.log('userWithTeam', userWithTeam);
 
     await Promise.all([
       db
