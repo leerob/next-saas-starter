@@ -46,7 +46,7 @@ export const InviteUserEmail = ({
               <Link href='/' className='flex items-center'>
                 <CircleIcon className='h-[32px] w-[32px] text-orange-500' />
                 <span className='ml-[10px] text-[24px] font-semibold text-gray-900'>
-                  {teamName}
+                  You're Invited
                 </span>
               </Link>
             </Section>
@@ -65,7 +65,7 @@ export const InviteUserEmail = ({
                 {invitedByEmail}
               </Link>
               ) has invited you to the <strong>{teamName}</strong> team on{' '}
-              <strong>Vercel</strong>.
+              <strong>ACME</strong>.
             </Text>
             <Section className='text-center mt-[32px] mb-[32px]'>
               <Button

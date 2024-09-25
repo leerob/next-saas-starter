@@ -134,7 +134,7 @@ export function Login({
               </div>
 
               {mode === 'signin' && (
-                <div className='text-sm mt-2'>
+                <div className='text-sm mt-4'>
                   <Link
                     href='/forgot-password'
                     className='font-medium text-orange-600 hover:text-orange-500'

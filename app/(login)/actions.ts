@@ -177,7 +177,7 @@ export const signUp = validatedAction(signUpSchema, async (data, formData) => {
   } else {
     // Create a new team if there's no invitation
     const newTeam: NewTeam = {
-      name: `${email}'s Team`,
+      name: `${email.split('@')[0]}'s Team`,
     };
 
     [createdTeam] = await db.insert(teams).values(newTeam).returning();
@@ -369,12 +369,13 @@ export const removeTeamMember = validatedActionWithUser(
 const inviteTeamMemberSchema = z.object({
   email: z.string().email('Invalid email address'),
   role: z.enum(['member', 'owner']),
+  firstName: z.string().min(1, 'First name is required').max(50),
 });
 
 export const inviteTeamMember = validatedActionWithUser(
   inviteTeamMemberSchema,
   async (data, _, user) => {
-    const { email, role } = data;
+    const { email, role, firstName } = data;
     const userWithTeam = await getUserWithTeam(user.id);
 
     if (!userWithTeam?.teamId) {
@@ -437,8 +438,8 @@ export const inviteTeamMember = validatedActionWithUser(
 
     await sendInvitationEmail(
       email,
-      user.name || user.email,
-      user.name || user.email,
+      firstName || email.split('@')[0],
+      user.name || user.email.split('@')[0],
       user.email,
       team[0].name,
       newInvitation[0].id.toString(),

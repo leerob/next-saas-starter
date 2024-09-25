@@ -19,14 +19,14 @@ import * as React from 'react';
 import { CircleIcon } from 'lucide-react';
 interface ResetPasswordEmailProps {
   username?: string;
-  email?: string;
+  email: string;
   resetPasswordLink?: string;
 }
 
 export const ResetPasswordEmail = ({
-  username = 'alanturing',
-  email = 'alanturing@acme.com',
-  resetPasswordLink = 'https://vercel.com/teams/invite/foo',
+  username = 'Friend',
+  email,
+  resetPasswordLink,
 }: ResetPasswordEmailProps) => {
   const previewText = `Reset your password on ACME`;
 
