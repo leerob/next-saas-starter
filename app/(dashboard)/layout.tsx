@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useUser } from '@/lib/auth';
 import { signOut } from '@/app/(login)/actions';
 import { useRouter } from 'next/navigation';
+import DarkModeToggle from '@/components/dark-mode-toggle'
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -78,6 +79,7 @@ function Header() {
               <Link href="/sign-up">Sign Up</Link>
             </Button>
           )}
+          <DarkModeToggle />
         </div>
       </div>
     </header>
