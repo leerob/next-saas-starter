@@ -36,7 +36,7 @@ export default function DarkModeToggle() {
 
     return (
         <button onClick={toggleDarkMode} className="">
-            {isDarkMode ? <Sun size={32} /> : <Moon size={32} />}
+            {isDarkMode ? <Sun /> : <Moon />}
         </button>
     )
 }
