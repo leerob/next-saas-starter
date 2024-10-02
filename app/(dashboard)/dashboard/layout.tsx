@@ -24,7 +24,7 @@ export default function DashboardLayout({
   return (
     <div className="flex flex-col min-h-[calc(100dvh-68px)] max-w-7xl mx-auto w-full">
       {/* Mobile header */}
-      <div className="lg:hidden flex items-center justify-between bg-white border-b border-gray-200 p-4">
+      <div className="lg:hidden bg-background flex items-center justify-between border-b p-4">
         <div className="flex items-center">
           <span className="font-medium">Settings</span>
         </div>
@@ -41,7 +41,10 @@ export default function DashboardLayout({
       <div className="flex flex-1 overflow-hidden h-full">
         {/* Sidebar */}
         <aside
-          className={`w-64 bg-white lg:bg-gray-50 border-r border-gray-200 lg:block ${
+          className={`w-64 border-r lg:block
+          ${isSidebarOpen ? 'bg-background' : 'bg-gray-50 dark:bg-gray-900'} 
+          lg:bg-gray-50 lg:dark:bg-gray-900
+          ${
             isSidebarOpen ? 'block' : 'hidden'
           } lg:relative absolute inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -52,9 +55,7 @@ export default function DashboardLayout({
               <Link key={item.href} href={item.href} passHref>
                 <Button
                   variant={pathname === item.href ? 'secondary' : 'ghost'}
-                  className={`my-1 w-full justify-start ${
-                    pathname === item.href ? 'bg-gray-100' : ''
-                  }`}
+                  className={`my-1 w-full justify-start`}
                   onClick={() => setIsSidebarOpen(false)}
                 >
                   <item.icon className="mr-2 h-4 w-4" />
