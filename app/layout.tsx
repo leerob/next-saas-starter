@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { Manrope } from 'next/font/google';
 import { UserProvider } from '@/lib/auth';
 import { getUser } from '@/lib/db/queries';
-import { LOCAL_STORAGE_KEY } from '@/components/dark-mode-toggle'
+import { cookies } from 'next/headers'
 
 export const metadata: Metadata = {
   title: 'Next.js SaaS Starter',
@@ -21,6 +21,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const storedTheme = cookies().get('next-sass-starter-theme')?.value
   let userPromise = getUser();
 
   return (
@@ -32,13 +33,12 @@ export default function RootLayout({
         <script
             dangerouslySetInnerHTML={{
               __html: `
-                if (localStorage.getItem(${LOCAL_STORAGE_KEY}) === 'dark' || (!(${LOCAL_STORAGE_KEY} in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.documentElement.classList.add('dark');
-                  document.documentElement.style.setProperty('color-scheme', 'dark');
-                } else {
-                  document.documentElement.classList.remove('dark');
-                  document.documentElement.style.removeProperty('color-scheme');
-                }
+                (function() {
+                  if (${storedTheme === 'dark'} || (${!storedTheme} && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark')
+                    document.documentElement.style.setProperty('color-scheme', 'dark')
+                  }
+                })();
               `,
             }}
         />

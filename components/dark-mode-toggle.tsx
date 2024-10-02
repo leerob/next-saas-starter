@@ -1,42 +1,21 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { Moon, Sun } from 'lucide-react'
 
-export const LOCAL_STORAGE_KEY = 'next-sass-starter-theme';
-
 export default function DarkModeToggle() {
-    const [isDarkMode, setIsDarkMode] = useState(false)
-
-    useEffect(() => {
-        const darkModePreference =
-            localStorage.getItem(LOCAL_STORAGE_KEY) === 'dark'
-        if (
-            darkModePreference ||
-            (!(LOCAL_STORAGE_KEY in localStorage) &&
-                window.matchMedia('(prefers-color-scheme: dark)').matches)
-        ) {
-            document.documentElement.classList.add('dark')
-            document.documentElement.style.setProperty('color-scheme', 'dark')
-            setIsDarkMode(true)
-        } else {
-            document.documentElement.classList.remove('dark')
-            document.documentElement.style.removeProperty('color-scheme')
-        }
-    }, [])
-
-    const toggleDarkMode = () => {
+    const toggleTheme = () => {
         const isDark = document.documentElement.classList.toggle('dark')
-        isDark
-            ? document.documentElement.style.setProperty('color-scheme', 'dark')
-            : document.documentElement.style.removeProperty('color-scheme')
-        setIsDarkMode(isDark)
-        localStorage.setItem(LOCAL_STORAGE_KEY, isDark ? 'dark' : 'light')
+        isDark ?
+            document.documentElement.style.setProperty('color-scheme', 'dark') :
+            document.documentElement.style.removeProperty('color-scheme')
+        // setting SameSite property to satisfy relevant console warning. Use SameSite=None if site relies on cross-site requests
+        document.cookie = `next-sass-starter-theme=${isDark ? 'dark' : 'light'}; SameSite=Lax; Path=/;`
     }
 
     return (
-        <button onClick={toggleDarkMode} className="">
-            {isDarkMode ? <Sun /> : <Moon />}
+        <button onClick={toggleTheme} className="">
+            <Sun size={32} className="hidden dark:block" />
+            <Moon size={32} className="block dark:hidden" />
         </button>
     )
 }
