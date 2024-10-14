@@ -38,7 +38,7 @@ export async function verifyToken(input: string) {
 }
 
 export async function getSession() {
-  const session = cookies().get('session')?.value;
+  const session = (await cookies()).get('session')?.value;
   if (!session) return null;
   return await verifyToken(session);
 }
@@ -50,7 +50,7 @@ export async function setSession(user: NewUser) {
     expires: expiresInOneDay.toISOString(),
   };
   const encryptedSession = await signToken(session);
-  cookies().set('session', encryptedSession, {
+  (await cookies()).set('session', encryptedSession, {
     expires: expiresInOneDay,
     httpOnly: true,
     secure: true,
