@@ -49,6 +49,12 @@ pnpm install
 
 ## Running Locally
 
+Make sure you have Stripe CLI installed, then log in to your Stripe account:
+
+```bash
+stripe login
+```
+
 Use the included setup script to create your `.env` file:
 
 ```bash
