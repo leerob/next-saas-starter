@@ -32,7 +32,7 @@
     "drizzle-orm": "^0.36.0",
     "jose": "^5.9.6",
     "lucide-react": "^0.454.0",
-    "next": "15.0.2",
+    "next": "15.0.3-canary.3",
     "postcss": "^8.4.47",
     "postgres": "^3.4.5",
     "react": "19.0.0-rc-cd22717c-20241013",
