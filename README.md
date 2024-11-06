@@ -22,7 +22,7 @@ Fun fact: the majority of the UI for this application was built with [v0](https:
 ## Features
 
 - Marketing landing page (`/`) with animated Terminal element
-- Pricing page (`/pricing`) which connects to Stripe Checkout
+- Pricing page (`/pricing`) which connects to Stripe Checkout or Stripe Embedded Checkout
 - Dashboard pages with CRUD operations on users/teams
 - Basic RBAC with Owner and Member roles
 - Subscription management with Stripe Customer Portal
@@ -112,10 +112,12 @@ When you're ready to deploy your SaaS application to production, follow these st
 In your Vercel project settings (or during deployment), add all the necessary environment variables. Make sure to update the values for the production environment, including:
 
 1. `BASE_URL`: Set this to your production domain.
-2. `STRIPE_SECRET_KEY`: Use your Stripe secret key for the production environment.
-3. `STRIPE_WEBHOOK_SECRET`: Use the webhook secret from the production webhook you created in step 1.
-4. `POSTGRES_URL`: Set this to your production database URL.
-5. `AUTH_SECRET`: Set this to a random string. `openssl rand -base64 32` will generate one.
+2. `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: Use your Stripe publishable key for the production environment.
+3. `STRIPE_SECRET_KEY`: Use your Stripe secret key for the production environment.
+4. `STRIPE_WEBHOOK_SECRET`: Use the webhook secret from the production webhook you created in step 1.
+5. `NEXT_PUBLIC_STRIPE_EMBEDDED_CHECKOUT_ENABLED`: Set this to `true` or `false` if you want to use Stripe Embedded Checkout or not.
+6. `POSTGRES_URL`: Set this to your production database URL.
+7. `AUTH_SECRET`: Set this to a random string. `openssl rand -base64 32` will generate one.
 
 ## Other Templates
 
