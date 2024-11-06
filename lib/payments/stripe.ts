@@ -24,26 +24,51 @@ export async function createCheckoutSession({
     redirect(`/sign-up?redirect=checkout&priceId=${priceId}`);
   }
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    line_items: [
-      {
-        price: priceId,
-        quantity: 1,
-      },
-    ],
-    mode: 'subscription',
-    success_url: `${process.env.BASE_URL}/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.BASE_URL}/pricing`,
-    customer: team.stripeCustomerId || undefined,
-    client_reference_id: user.id.toString(),
-    allow_promotion_codes: true,
-    subscription_data: {
-      trial_period_days: 14,
-    },
-  });
+  const createCheckoutSessionObject: Stripe.Checkout.SessionCreateParams =
+    process.env.NEXT_PUBLIC_STRIPE_EMBEDDED_CHECKOUT_ENABLED === 'true'
+      ? {
+        ui_mode: 'embedded',
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price: priceId,
+            quantity: 1,
+          },
+        ],
+        mode: 'subscription',
+        customer: team.stripeCustomerId || undefined,
+        client_reference_id: user.id.toString(),
+        allow_promotion_codes: true,
+        subscription_data: {
+          trial_period_days: 14,
+        },
+        return_url: `${process.env.BASE_URL}/dashboard`,
+      }
+      : {
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price: priceId,
+            quantity: 1,
+          },
+        ],
+        mode: 'subscription',
+        success_url: `${process.env.BASE_URL}/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.BASE_URL}/pricing`,
+        customer: team.stripeCustomerId || undefined,
+        client_reference_id: user.id.toString(),
+        allow_promotion_codes: true,
+        subscription_data: {
+          trial_period_days: 14,
+        },
+      };
 
-  redirect(session.url!);
+  const session = await stripe.checkout.sessions.create(createCheckoutSessionObject);
+  if (process.env.NEXT_PUBLIC_STRIPE_EMBEDDED_CHECKOUT_ENABLED !== 'true' && session.url) {
+    redirect(session.url);
+  }
+
+  return session.client_secret;
 }
 
 export async function createCustomerPortalSession(team: Team) {

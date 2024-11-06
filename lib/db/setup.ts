@@ -155,8 +155,16 @@ async function getStripeSecretKey(): Promise<string> {
   return await question('Enter your Stripe Secret Key: ');
 }
 
+async function getStripePublishableKey(): Promise<string> {
+  console.log('Step 4: Getting Stripe Publishable Key');
+  console.log(
+    'You can find your Stripe Publishable Key at: https://dashboard.stripe.com/test/apikeys'
+  );
+  return await question('Enter your Stripe Publishable Key: ');
+}
+
 async function createStripeWebhook(): Promise<string> {
-  console.log('Step 4: Creating Stripe webhook...');
+  console.log('Step 5: Creating Stripe webhook...');
   try {
     const { stdout } = await execAsync('stripe listen --print-secret');
     const match = stdout.match(/whsec_[a-zA-Z0-9]+/);
@@ -178,13 +186,21 @@ async function createStripeWebhook(): Promise<string> {
   }
 }
 
+async function getStripeEmbeddedCheckoutPreference(): Promise<string> {
+  console.log('Step 6: Configuring Stripe Checkout');
+  const answer = await question(
+    'Do you want to use Stripe Embedded Checkout? (y/n): '
+  );
+  return answer.toLowerCase() === 'y' ? 'true' : 'false';
+}
+
 function generateAuthSecret(): string {
-  console.log('Step 5: Generating AUTH_SECRET...');
+  console.log('Step 7: Generating AUTH_SECRET...');
   return crypto.randomBytes(32).toString('hex');
 }
 
 async function writeEnvFile(envVars: Record<string, string>) {
-  console.log('Step 6: Writing environment variables to .env');
+  console.log('Step 8: Writing environment variables to .env');
   const envContent = Object.entries(envVars)
     .map(([key, value]) => `${key}=${value}`)
     .join('\n');
@@ -198,16 +214,20 @@ async function main() {
 
   const POSTGRES_URL = await getPostgresURL();
   const STRIPE_SECRET_KEY = await getStripeSecretKey();
+  const NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = await getStripePublishableKey();
   const STRIPE_WEBHOOK_SECRET = await createStripeWebhook();
   const BASE_URL = 'http://localhost:3000';
   const AUTH_SECRET = generateAuthSecret();
+  const NEXT_PUBLIC_STRIPE_EMBEDDED_CHECKOUT_ENABLED = await getStripeEmbeddedCheckoutPreference();
 
   await writeEnvFile({
     POSTGRES_URL,
     STRIPE_SECRET_KEY,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     STRIPE_WEBHOOK_SECRET,
     BASE_URL,
     AUTH_SECRET,
+    NEXT_PUBLIC_STRIPE_EMBEDDED_CHECKOUT_ENABLED,
   });
 
   console.log('🎉 Setup completed successfully!');
