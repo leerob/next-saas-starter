@@ -112,7 +112,7 @@ export async function createCustomerPortalSession(team: Team) {
 }
 
 export async function handleSubscriptionChange(
-  subscription: Stripe.Subscription
+  subscription: Stripe.Subscription,
 ) {
   const customerId = subscription.customer as string;
   const subscriptionId = subscription.id;
