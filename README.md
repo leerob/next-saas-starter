@@ -124,3 +124,4 @@ While this template is intentionally minimal and to be used as a learning resour
 - https://achromatic.dev
 - https://shipfa.st
 - https://makerkit.dev
+- https://boilerplatehub.com/categories/nextjs - A curated directory of Next.js boilerplates
