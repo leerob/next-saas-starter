@@ -49,7 +49,7 @@ pnpm install
 
 ## Running Locally
 
-Use the included setup script to create your `.env` file:
+Run the following command to set up your .env file and configure the Postgres instance. When prompted, select whether you want to use a local Postgres instance with Docker (L) or a remote instance (R):
 
 ```bash
 pnpm db:setup
