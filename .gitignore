@@ -34,7 +34,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ide
 .vscode
+.idea
 
 # Docker
 postgres_data/
