@@ -8,7 +8,8 @@
     "db:seed": "npx tsx lib/db/seed.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "npx tsx lib/db/migrate.ts",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "email": "email dev --port 3001"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.1",
@@ -19,6 +20,9 @@
     "@radix-ui/react-scroll-area": "^1.2.1",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@react-email/components": "0.0.25",
+    "@react-email/render": "^1.0.1",
+    "@react-email/tailwind": "^0.1.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.10.1",
     "@types/react": "19.0.1",
@@ -27,6 +31,8 @@
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "resend": "^4.0.0",
+    "responsive-react-email": "^0.0.5",
     "dotenv": "^16.4.7",
     "drizzle-kit": "^0.30.0",
     "drizzle-orm": "^0.38.0",
@@ -45,5 +51,8 @@
     "tailwindcss-react-aria-components": "1.2.0",
     "typescript": "^5.7.2",
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "react-email": "3.0.1"
   }
 }
