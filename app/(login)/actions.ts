@@ -217,7 +217,7 @@ export async function signOut() {
   const user = (await getUser()) as User;
   const userWithTeam = await getUserWithTeam(user.id);
   await logActivity(userWithTeam?.teamId, user.id, ActivityType.SIGN_OUT);
-  cookies().delete('session');
+  (await cookies()).delete('session');
 }
 
 const updatePasswordSchema = z
@@ -308,7 +308,7 @@ export const deleteAccount = validatedActionWithUser(
         );
     }
 
-    cookies().delete('session');
+    (await cookies()).delete('session');
     redirect('/sign-in');
   }
 );
