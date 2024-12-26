@@ -18,7 +18,7 @@ type UserContextType = {
 const UserContext = createContext<UserContextType | null>(null);
 
 export function useUser(): UserContextType {
-  let context = useContext(UserContext);
+  const context = useContext(UserContext);
   if (context === null) {
     throw new Error('useUser must be used within a UserProvider');
   }
@@ -32,8 +32,8 @@ export function UserProvider({
   children: ReactNode;
   userPromise: Promise<User | null>;
 }) {
-  let initialUser = use(userPromise);
-  let [user, setUser] = useState<User | null>(initialUser);
+  const initialUser = use(userPromise);
+  const [user, setUser] = useState<User | null>(initialUser);
 
   useEffect(() => {
     setUser(initialUser);

@@ -34,7 +34,7 @@ async function checkStripeCLI() {
     try {
       await execAsync('stripe config --list');
       console.log('Stripe CLI is authenticated.');
-    } catch (error) {
+    } catch (_error) {
       console.log(
         'Stripe CLI is not authenticated or the authentication has expired.'
       );
@@ -53,14 +53,14 @@ async function checkStripeCLI() {
       try {
         await execAsync('stripe config --list');
         console.log('Stripe CLI authentication confirmed.');
-      } catch (error) {
+      } catch (_error) {
         console.error(
           'Failed to verify Stripe CLI authentication. Please try again.'
         );
         process.exit(1);
       }
     }
-  } catch (error) {
+  } catch (_error) {
     console.error(
       'Stripe CLI is not installed. Please install it and try again.'
     );
@@ -100,7 +100,7 @@ async function setupLocalPostgres() {
   try {
     await execAsync('docker --version');
     console.log('Docker is installed.');
-  } catch (error) {
+  } catch (_error) {
     console.error(
       'Docker is not installed. Please install Docker and try again.'
     );
@@ -139,7 +139,7 @@ volumes:
   try {
     await execAsync('docker compose up -d');
     console.log('Docker container started successfully.');
-  } catch (error) {
+  } catch (_error) {
     console.error(
       'Failed to start Docker container. Please check your Docker installation and try again.'
     );

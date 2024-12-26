@@ -4,6 +4,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "lint": "next lint",
     "db:setup": "npx tsx lib/db/setup.ts",
     "db:seed": "npx tsx lib/db/seed.ts",
     "db:generate": "drizzle-kit generate",
@@ -46,6 +47,10 @@
     "tailwindcss-react-aria-components": "1.2.0",
     "typescript": "^5.7.2",
     "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "eslint": "^9",
+    "eslint-config-next": "^15.1.0"
   }
 }
-
