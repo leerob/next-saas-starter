@@ -42,7 +42,7 @@ function Header() {
           </Link>
           {user ? (
             <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger>
                 <Avatar className="cursor-pointer size-9">
                   <AvatarImage alt={user.name || ''} />
                   <AvatarFallback>
