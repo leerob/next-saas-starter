@@ -18,7 +18,7 @@ export async function comparePasswords(
 }
 
 type SessionData = {
-  user: { id: number };
+  user: { id: string };
   expires: string;
 };
 

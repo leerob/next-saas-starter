@@ -60,7 +60,9 @@ async function seed() {
   const [team] = await db
     .insert(teams)
     .values({
+      id: crypto.randomUUID(),
       name: 'Test Team',
+      createdAt: new Date(),
     })
     .returning();
 

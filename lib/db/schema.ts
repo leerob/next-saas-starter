@@ -1,15 +1,14 @@
 import {
   pgTable,
-  serial,
   varchar,
   text,
   timestamp,
-  integer,
+  uuid,
 } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 
 export const users = pgTable('users', {
-  id: serial('id').primaryKey(),
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   name: varchar('name', { length: 100 }),
   email: varchar('email', { length: 255 }).notNull().unique(),
   passwordHash: text('password_hash').notNull(),
@@ -20,7 +19,7 @@ export const users = pgTable('users', {
 });
 
 export const teams = pgTable('teams', {
-  id: serial('id').primaryKey(),
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   name: varchar('name', { length: 100 }).notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
@@ -32,11 +31,11 @@ export const teams = pgTable('teams', {
 });
 
 export const teamMembers = pgTable('team_members', {
-  id: serial('id').primaryKey(),
-  userId: integer('user_id')
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid('user_id')
     .notNull()
     .references(() => users.id),
-  teamId: integer('team_id')
+  teamId: uuid('team_id')
     .notNull()
     .references(() => teams.id),
   role: varchar('role', { length: 50 }).notNull(),
@@ -44,24 +43,24 @@ export const teamMembers = pgTable('team_members', {
 });
 
 export const activityLogs = pgTable('activity_logs', {
-  id: serial('id').primaryKey(),
-  teamId: integer('team_id')
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  teamId: uuid('team_id')
     .notNull()
     .references(() => teams.id),
-  userId: integer('user_id').references(() => users.id),
+  userId: uuid('user_id').references(() => users.id),
   action: text('action').notNull(),
   timestamp: timestamp('timestamp').notNull().defaultNow(),
   ipAddress: varchar('ip_address', { length: 45 }),
 });
 
 export const invitations = pgTable('invitations', {
-  id: serial('id').primaryKey(),
-  teamId: integer('team_id')
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  teamId: uuid('team_id')
     .notNull()
     .references(() => teams.id),
   email: varchar('email', { length: 255 }).notNull(),
   role: varchar('role', { length: 50 }).notNull(),
-  invitedBy: integer('invited_by')
+  invitedBy: uuid('invited_by')
     .notNull()
     .references(() => users.id),
   invitedAt: timestamp('invited_at').notNull().defaultNow(),
