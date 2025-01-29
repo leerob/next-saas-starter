@@ -30,6 +30,7 @@
 git clone https://github.com/nextjs/saas-starter
 cd saas-starter
 pnpm install
+
 ```
 
 ## ローカルでの実行
@@ -38,6 +39,7 @@ pnpm install
 
 ```bash
 pnpm db:setup
+
 ```
 
 次に、データベースのマイグレーションを実行し、デフォルトのユーザーとチームでデータベースをシードします:
