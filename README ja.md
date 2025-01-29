@@ -47,6 +47,7 @@ pnpm db:setup
 ```bash
 pnpm db:migrate
 pnpm db:seed
+
 ```
 
 これにより、以下のユーザーとチームが作成されます:
