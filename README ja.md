@@ -61,6 +61,7 @@ pnpm db:seed
 
 ```bash
 pnpm dev
+
 ```
 
 ブラウザで [http://localhost:3000](http://localhost:3000) を開いて、アプリを確認してください。
@@ -69,6 +70,7 @@ pnpm dev
 
 ```bash
 stripe listen --forward-to localhost:3000/api/stripe/webhook
+
 ```
 
 ## 支払いのテスト
