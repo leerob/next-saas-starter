@@ -8,7 +8,11 @@
     "db:seed": "npx tsx lib/db/seed.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:push": "drizzle-kit push",
+    "db:pull": "drizzle-kit pull",
+    "db:studio": "drizzle-kit studio",
+    "db:seeds": "npx tsx src/db/seeds.ts",
+    "db:reset": "npx tsx src/db/reset.ts"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.2",
