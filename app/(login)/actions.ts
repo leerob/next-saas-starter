@@ -439,6 +439,7 @@ export const inviteTeamMember = validatedActionWithUser(
 
     // TODO: Send invitation email and include ?inviteId={id} to sign-up URL
     // await sendInvitationEmail(email, userWithTeam.team.name, role)
+    // ja: 招待メールを送信し、サインアップURLに ?inviteId={id} を含める
 
     return { success: 'Invitation sent successfully' };
   },
