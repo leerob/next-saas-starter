@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useUser } from '@/lib/auth';
 import { signOut } from '@/app/(login)/actions';
 import { useRouter } from 'next/navigation';
+import { ModeToggle } from '@/components/mode-toggle';
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,7 +34,10 @@ function Header() {
           <CircleIcon className="h-6 w-6 text-orange-500" />
           <span className="ml-2 text-xl font-semibold">ACME</span>
         </Link>
+        {/* 上部のメニュー */}
         <div className="flex items-center space-x-4">
+          {/* ダークモードスイッチ */}
+          <ModeToggle />
           <Link
             href="/pricing"
             className="text-sm font-medium hover:text-gray-400"
