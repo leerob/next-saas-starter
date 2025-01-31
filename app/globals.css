@@ -57,9 +57,14 @@
   The default border color has changed to `currentColor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
   looks the same as it did with Tailwind CSS v3.
+  Tailwind CSS v4では、デフォルトのボーダーカラーが `currentColor` に変更されました、
+  そこで、Tailwind CSS v3の時と同じように見えるように、互換スタイルを追加しました。
+  を追加しました。
 
   If we ever want to remove these styles, we need to add an explicit border
   color utility to any element that depends on these defaults.
+  これらのスタイルを削除したい場合は、これらのデフォルトに依存する要素に明示的なボーダー・カラー・ユーティリティを追加する必要があります。
+  色ユーティリティを追加する必要があります。
 */
 @layer base {
   *,

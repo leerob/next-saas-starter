@@ -8,7 +8,11 @@
     "db:seed": "npx tsx lib/db/seed.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:push": "drizzle-kit push",
+    "db:pull": "drizzle-kit pull",
+    "db:studio": "drizzle-kit studio",
+    "db:seeds": "npx tsx src/db/seeds.ts",
+    "db:reset": "npx tsx src/db/reset.ts"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.2",
@@ -34,6 +38,7 @@
     "jose": "^5.9.6",
     "lucide-react": "^0.474.0",
     "next": "15.1.6",
+    "next-themes": "^0.4.4",
     "postcss": "^8.5.1",
     "postgres": "^3.4.5",
     "react": "19.0.0",
