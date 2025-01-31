@@ -16,11 +16,13 @@ config({ path: ".env" });
 export default defineConfig({
   // フォルダ内にあるスキーマファイルを読み込む
   // schema: "./src/db/schema",
-  schema: './lib/db/schema.ts',
+  // フォルダ内にあるスキーマファイルを読み込む
+  schema: './lib/db/schema',
   // Supabase へのマイグレーションファイルを出力するディレクトリ
   out: "./supabase/migrations",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    // url: process.env.DATABASE_URL!,
+    url: process.env.POSTGRES_URL!,
   },
 });

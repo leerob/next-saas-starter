@@ -15,7 +15,7 @@ import {
   type NewActivityLog,
   ActivityType,
   invitations,
-} from '@/lib/db/schema';
+} from '@/lib/db/schema/originalSchema';
 import { comparePasswords, hashPassword, setSession } from '@/lib/auth/session';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';

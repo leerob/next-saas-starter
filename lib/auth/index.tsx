@@ -8,7 +8,7 @@ import {
   useEffect,
 } from 'react';
 import { use } from 'react';
-import { User } from '@/lib/db/schema';
+import { User } from '@/lib/db/schema/originalSchema';
 
 type UserContextType = {
   user: User | null;
