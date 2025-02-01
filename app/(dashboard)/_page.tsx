@@ -23,7 +23,7 @@ export default function HomePage() {
                   href="https://vercel.com/templates/next.js/next-js-saas-starter"
                   target="_blank"
                 >
-                  <Button className=" hover:bg-gray-100 border border-gray-200 rounded-full text-lg px-8 py-4 inline-flex items-center justify-center">
+                  <Button className=" hover:bg-gray-400 border border-gray-200 rounded-full text-lg px-8 py-4 inline-flex items-center justify-center">
                     Deploy your own
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>

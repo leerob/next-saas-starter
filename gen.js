@@ -1,5 +1,3 @@
-// お試しプレイグラウンド
-
 import crypto from 'node:crypto';
 
 function generateAuthSecret() {
