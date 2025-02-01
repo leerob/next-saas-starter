@@ -2,8 +2,9 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   experimental: {
-    ppr: false,
-  },
+    ppr: true,
+    newDevOverlay: true
+  }
 };
 
 export default nextConfig;
