@@ -119,6 +119,7 @@ async function getSupabaseURL(): Promise<{
   supabaseAnonKey: string;
   supabaseServiceRole: string;
   storageUrl: string;
+  postgresUrl: string;
 }> {
   console.log("Step 2: Setting up Supabase");
 
@@ -176,6 +177,7 @@ async function getSupabaseURL(): Promise<{
       let supabaseAnonKey = "";
       let supabaseServiceRole = "";
       let storageUrl = "";
+      let postgresUrl = "";
 
       for (const line of lines) {
         if (line.includes("API URL:")) {
@@ -186,6 +188,8 @@ async function getSupabaseURL(): Promise<{
           supabaseServiceRole = line.split("service_role key:")[1].trim();
         } else if (line.includes("Storage URL:")) {
           storageUrl = line.split("Storage URL:")[1].trim();
+        } else if (line.includes("DB URL:")) {
+          postgresUrl = line.split("DB URL:")[1].trim();
         }
       }
 
@@ -193,7 +197,8 @@ async function getSupabaseURL(): Promise<{
         !supabaseUrl ||
         !supabaseAnonKey ||
         !supabaseServiceRole ||
-        !storageUrl
+        !storageUrl ||
+        !postgresUrl
       ) {
         throw new Error(
           "Failed to extract Supabase configuration. Output: " + stdout
@@ -203,12 +208,14 @@ async function getSupabaseURL(): Promise<{
       console.log("Successfully extracted Supabase configuration:");
       console.log("- API URL:", supabaseUrl);
       console.log("- Storage URL:", storageUrl);
+      console.log("- DB URL:", postgresUrl);
 
       return {
         supabaseUrl,
         supabaseAnonKey,
         supabaseServiceRole,
         storageUrl,
+        postgresUrl,
       };
     } catch (error) {
       console.error("Failed to start Supabase. Error:", error);
@@ -270,8 +277,13 @@ async function writeEnvFile(envVars: Record<string, string>) {
 async function main() {
   await checkStripeCLI();
 
-  const { supabaseUrl, supabaseAnonKey, supabaseServiceRole, storageUrl } =
-    await getSupabaseURL();
+  const {
+    supabaseUrl,
+    supabaseAnonKey,
+    supabaseServiceRole,
+    storageUrl,
+    postgresUrl,
+  } = await getSupabaseURL();
 
   await checkStripeLogin();
   const STRIPE_SECRET_KEY = await getStripeSecretKey();
@@ -288,6 +300,7 @@ async function main() {
     STRIPE_WEBHOOK_SECRET,
     BASE_URL,
     AUTH_SECRET,
+    POSTGRES_URL: postgresUrl,
   });
 
   console.log("🎉 Setup completed successfully!");
