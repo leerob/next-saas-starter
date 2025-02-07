@@ -36,10 +36,7 @@ pnpm install
 
 create stripe account
 
-```
-$ brew install stripe
-$ stripe login
-```
+create supabase account
 
 Use the included setup script to create your `.env` file:
 
