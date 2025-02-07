@@ -34,6 +34,13 @@ pnpm install
 
 ## Running Locally
 
+create stripe account
+
+```
+$ brew install stripe
+$ stripe login
+```
+
 Use the included setup script to create your `.env` file:
 
 ```bash
