@@ -57,11 +57,6 @@ About the Test
 - As long as the current behavior is not changed, it is possible to change the structure and logic of the source code to make it easier to test.
 - If the unit tests do not pass even after multiple corrections, you can temporarily set it to "ignore."
 
-About environment variable
-
-- in local and dev environment, we use .env environment file.
-- in production environment, we use .env.prd environment file.
-
 Abount nodes command
 
 - if there is a command that you want to execute in package.json, you should use it's command.
