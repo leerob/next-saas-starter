@@ -77,6 +77,43 @@ async function checkStripeCLI() {
   }
 }
 
+async function checkStripeLogin() {
+  console.log("Step 3: Checking Stripe CLI login status...");
+  try {
+    // まず認証状態をチェック
+    try {
+      await execAsync("stripe config --list");
+      console.log("Stripe CLI is already authenticated.");
+      return;
+    } catch (error) {
+      console.log("Stripe CLI needs authentication.");
+      console.log("Please run 'stripe login' in a new terminal window.");
+      const answer = await question(
+        "Have you completed the Stripe login process? (y/n): "
+      );
+      if (answer.toLowerCase() !== "y") {
+        console.log("Please complete Stripe login and run this script again.");
+        process.exit(1);
+      }
+
+      // 認証の確認
+      try {
+        await execAsync("stripe config --list");
+        console.log("Stripe CLI authentication confirmed.");
+      } catch (error) {
+        console.error("Failed to verify Stripe CLI authentication.");
+        console.log(
+          "Please make sure you completed the login process correctly."
+        );
+        process.exit(1);
+      }
+    }
+  } catch (error) {
+    console.error("Failed to check Stripe login status:", error);
+    process.exit(1);
+  }
+}
+
 async function getSupabaseURL(): Promise<{
   supabaseUrl: string;
   supabaseAnonKey: string;
@@ -185,7 +222,7 @@ async function getSupabaseURL(): Promise<{
 }
 
 async function getStripeSecretKey(): Promise<string> {
-  console.log("Step 3: Getting Stripe Secret Key");
+  console.log("Step 4: Getting Stripe Secret Key");
   console.log(
     "You can find your Stripe Secret Key at: https://dashboard.stripe.com/test/apikeys"
   );
@@ -193,7 +230,7 @@ async function getStripeSecretKey(): Promise<string> {
 }
 
 async function createStripeWebhook(): Promise<string> {
-  console.log("Step 4: Creating Stripe webhook...");
+  console.log("Step 5: Creating Stripe webhook...");
   try {
     const { stdout } = await execAsync("stripe listen --print-secret");
     const match = stdout.match(/whsec_[a-zA-Z0-9]+/);
@@ -216,12 +253,12 @@ async function createStripeWebhook(): Promise<string> {
 }
 
 function generateAuthSecret(): string {
-  console.log("Step 5: Generating AUTH_SECRET...");
+  console.log("Step 6: Generating AUTH_SECRET...");
   return crypto.randomBytes(32).toString("hex");
 }
 
 async function writeEnvFile(envVars: Record<string, string>) {
-  console.log("Step 6: Writing environment variables to .env");
+  console.log("Step 7: Writing environment variables to .env");
   const envContent = Object.entries(envVars)
     .map(([key, value]) => `${key}=${value}`)
     .join("\n");
@@ -235,6 +272,8 @@ async function main() {
 
   const { supabaseUrl, supabaseAnonKey, supabaseServiceRole, storageUrl } =
     await getSupabaseURL();
+
+  await checkStripeLogin();
   const STRIPE_SECRET_KEY = await getStripeSecretKey();
   const STRIPE_WEBHOOK_SECRET = await createStripeWebhook();
   const BASE_URL = "http://localhost:3000";
