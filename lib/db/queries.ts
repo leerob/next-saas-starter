@@ -5,10 +5,15 @@ import { cookies } from "next/headers";
 import { verifyToken } from "@/lib/auth/session";
 import { products } from "@/lib/db/schema";
 import { mockProducts } from "@/lib/mock/products";
+import { mockUsers } from "@/lib/mock/users";
 
 const USE_MOCK = process.env.USE_MOCK === "true";
 
 export async function getUser() {
+  if (USE_MOCK) {
+    return mockUsers[0]; // 開発用のモックユーザーを返す
+  }
+
   const sessionCookie = (await cookies()).get("session");
   if (!sessionCookie || !sessionCookie.value) {
     return null;
