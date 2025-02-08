@@ -107,7 +107,7 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
     return createCheckoutSession({ team: foundTeam, priceId });
   }
 
-  redirect("/");
+  redirect("/home");
 });
 
 const signUpSchema = z.object({
@@ -117,6 +117,10 @@ const signUpSchema = z.object({
 });
 
 export const signUp = validatedAction(signUpSchema, async (data, formData) => {
+  if (USE_MOCK) {
+    await setSession(mockUser);
+    redirect("/home");
+  }
   const { email, password, inviteId } = data;
 
   const existingUser = await db
@@ -228,19 +232,21 @@ export const signUp = validatedAction(signUpSchema, async (data, formData) => {
     return createCheckoutSession({ team: createdTeam, priceId });
   }
 
-  redirect("/");
+  redirect("/home");
 });
 
 export async function signOut() {
   console.log("signOut");
   if (USE_MOCK) {
     console.log("signOut mock");
-    redirect("/sign-in");
+    (await cookies()).delete("session");
+  } else {
+    const user = (await getUser()) as User;
+    const userWithTeam = await getUserWithTeam(user.id);
+    await logActivity(userWithTeam?.teamId, user.id, ActivityType.SIGN_OUT);
+    (await cookies()).delete("session");
   }
-  const user = (await getUser()) as User;
-  const userWithTeam = await getUserWithTeam(user.id);
-  await logActivity(userWithTeam?.teamId, user.id, ActivityType.SIGN_OUT);
-  (await cookies()).delete("session");
+  redirect("/sign-in");
 }
 
 const updatePasswordSchema = z
