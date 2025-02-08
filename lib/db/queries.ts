@@ -1,11 +1,19 @@
 import { desc, and, eq, isNull } from "drizzle-orm";
 import { db } from "./drizzle";
-import { activityLogs, teamMembers, teams, users } from "./schema";
+import {
+  activityLogs,
+  teamMembers,
+  teams,
+  users,
+  carts,
+  cartItems,
+  products,
+} from "./schema";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/lib/auth/session";
-import { products } from "@/lib/db/schema";
 import { mockProducts } from "@/lib/mock/products";
 import { mockUser } from "@/lib/mock/user";
+import { mockCarts, mockCartItems } from "@/lib/mock/cart";
 
 const USE_MOCK = process.env.USE_MOCK === "true";
 
@@ -154,4 +162,172 @@ export async function getProductById(id: number) {
     .where(eq(products.id, id))
     .limit(1);
   return result[0] ?? null;
+}
+
+export async function getCartForUser(userId: number) {
+  if (USE_MOCK) {
+    return mockCarts.find((cart) => cart.userId === userId) ?? null;
+  }
+
+  const result = await db
+    .select()
+    .from(carts)
+    .where(and(eq(carts.userId, userId), eq(carts.status, "active")))
+    .limit(1);
+
+  return result[0] ?? null;
+}
+
+export async function getCartItems(cartId: number) {
+  if (USE_MOCK) {
+    return mockCartItems.filter((item) => item.cartId === cartId);
+  }
+
+  return await db
+    .select({
+      id: cartItems.id,
+      cartId: cartItems.cartId,
+      productId: cartItems.productId,
+      quantity: cartItems.quantity,
+      product: products,
+    })
+    .from(cartItems)
+    .leftJoin(products, eq(cartItems.productId, products.id))
+    .where(eq(cartItems.cartId, cartId));
+}
+
+export async function createCart(userId: number) {
+  if (USE_MOCK) {
+    const newCart = {
+      id: mockCarts.length + 1,
+      userId,
+      status: "active",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    mockCarts.push(newCart);
+    return newCart;
+  }
+
+  const result = await db
+    .insert(carts)
+    .values({
+      userId,
+      status: "active",
+    })
+    .returning();
+
+  return result[0];
+}
+
+export async function addToCart(
+  cartId: number,
+  productId: number,
+  quantity: number
+) {
+  if (USE_MOCK) {
+    const existingItem = mockCartItems.find(
+      (item) => item.cartId === cartId && item.productId === productId
+    );
+
+    if (existingItem) {
+      existingItem.quantity += quantity;
+      existingItem.updatedAt = new Date();
+      return existingItem;
+    }
+
+    const newItem = {
+      id: mockCartItems.length + 1,
+      cartId,
+      productId,
+      quantity,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    mockCartItems.push(newItem);
+    return newItem;
+  }
+
+  const existingItem = await db
+    .select()
+    .from(cartItems)
+    .where(
+      and(eq(cartItems.cartId, cartId), eq(cartItems.productId, productId))
+    )
+    .limit(1);
+
+  if (existingItem.length > 0) {
+    const result = await db
+      .update(cartItems)
+      .set({
+        quantity: existingItem[0].quantity + quantity,
+        updatedAt: new Date(),
+      })
+      .where(
+        and(eq(cartItems.cartId, cartId), eq(cartItems.productId, productId))
+      )
+      .returning();
+    return result[0];
+  }
+
+  const result = await db
+    .insert(cartItems)
+    .values({
+      cartId,
+      productId,
+      quantity,
+    })
+    .returning();
+
+  return result[0];
+}
+
+export async function updateCartItemQuantity(
+  cartItemId: number,
+  quantity: number
+) {
+  if (USE_MOCK) {
+    const item = mockCartItems.find((item) => item.id === cartItemId);
+    if (item) {
+      item.quantity = quantity;
+      item.updatedAt = new Date();
+      return item;
+    }
+    return null;
+  }
+
+  const result = await db
+    .update(cartItems)
+    .set({
+      quantity,
+      updatedAt: new Date(),
+    })
+    .where(eq(cartItems.id, cartItemId))
+    .returning();
+
+  return result[0] ?? null;
+}
+
+export async function removeFromCart(cartItemId: number) {
+  if (USE_MOCK) {
+    const index = mockCartItems.findIndex((item) => item.id === cartItemId);
+    if (index !== -1) {
+      mockCartItems.splice(index, 1);
+    }
+    return;
+  }
+
+  await db.delete(cartItems).where(eq(cartItems.id, cartItemId));
+}
+
+export async function clearCart(cartId: number) {
+  if (USE_MOCK) {
+    const cartIndex = mockCartItems.findIndex((item) => item.cartId === cartId);
+    if (cartIndex !== -1) {
+      mockCartItems.splice(cartIndex);
+    }
+    return;
+  }
+
+  await db.delete(cartItems).where(eq(cartItems.cartId, cartId));
 }
