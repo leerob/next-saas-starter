@@ -10,10 +10,6 @@ import { mockUser } from "@/lib/mock/user";
 const USE_MOCK = process.env.USE_MOCK === "true";
 
 export async function getUser() {
-  if (USE_MOCK) {
-    return mockUser; // 開発用のモックユーザーを返す
-  }
-
   const sessionCookie = (await cookies()).get("session");
   if (!sessionCookie || !sessionCookie.value) {
     return null;
@@ -30,6 +26,10 @@ export async function getUser() {
 
   if (new Date(sessionData.expires) < new Date()) {
     return null;
+  }
+
+  if (USE_MOCK) {
+    return mockUser; // 開発用のモックユーザーを返す
   }
 
   const user = await db
