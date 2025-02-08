@@ -6,14 +6,32 @@ import { formatPrice } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 interface CartSummaryProps {
-  items: (CartItem & { product: Product })[];
+  items: {
+    id: number;
+    cartId: number;
+    productId: number;
+    quantity: number;
+    product: {
+      id: number;
+      name: string;
+      description: string | null;
+      price: string;
+      currency: string;
+      imageUrl: string | null;
+      stock: number;
+      createdAt: Date;
+      updatedAt: Date;
+      deletedAt: Date | null;
+    } | null;
+  }[];
 }
 
 export function CartSummary({ items }: CartSummaryProps) {
   const router = useRouter();
 
   const subtotal = items.reduce(
-    (total, item) => total + Number(item.product.price) * item.quantity,
+    (total, item) =>
+      total + (item.product ? Number(item.product.price) * item.quantity : 0),
     0
   );
 

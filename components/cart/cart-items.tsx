@@ -11,7 +11,24 @@ import { updateCartItemQuantity, removeFromCart } from "@/app/actions/cart";
 import { Loader2, Trash2 } from "lucide-react";
 
 interface CartItemsProps {
-  items: (CartItem & { product: Product })[];
+  items: {
+    id: number;
+    cartId: number;
+    productId: number;
+    quantity: number;
+    product: {
+      id: number;
+      name: string;
+      description: string | null;
+      price: string;
+      currency: string;
+      imageUrl: string | null;
+      stock: number;
+      createdAt: Date;
+      updatedAt: Date;
+      deletedAt: Date | null;
+    } | null;
+  }[];
 }
 
 export function CartItems({ items }: CartItemsProps) {
@@ -43,8 +60,8 @@ export function CartItems({ items }: CartItemsProps) {
         >
           <div className="relative w-24 h-24">
             <Image
-              src={item.product.imageUrl ?? ""}
-              alt={item.product.name}
+              src={item.product?.imageUrl ?? ""}
+              alt={item.product?.name ?? ""}
               fill
               className="object-cover rounded-md"
               sizes="96px"
@@ -52,10 +69,12 @@ export function CartItems({ items }: CartItemsProps) {
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-semibold truncate">
-              {item.product.name}
+              {item.product?.name ?? ""}
             </h3>
             <p className="text-sm text-gray-500">
-              {formatPrice(Number(item.product.price), item.product.currency)}
+              {item.product?.price && item.product?.currency
+                ? formatPrice(Number(item.product.price), item.product.currency)
+                : "-"}
             </p>
           </div>
           <div className="flex items-center space-x-2">
