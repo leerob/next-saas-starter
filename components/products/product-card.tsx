@@ -10,7 +10,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden" role="article">
       <CardContent className="p-0">
         <div className="relative aspect-square">
           <Image

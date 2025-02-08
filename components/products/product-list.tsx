@@ -1,9 +1,9 @@
 import { getProducts } from "@/lib/db/queries";
 import { ProductCard } from "./product-card";
 
-const products = await getProducts();
+export async function ProductList() {
+  const products = await getProducts();
 
-export function ProductList() {
   return (
     <div className="container py-8">
       <h1 className="mb-8 text-3xl font-bold">商品一覧</h1>
