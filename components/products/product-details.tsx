@@ -1,3 +1,5 @@
+"use client";
+
 import { Product } from "@/lib/db/schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,15 +11,36 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import { formatPrice } from "@/lib/utils";
+import { useState } from "react";
+import { addToCart } from "@/app/actions/cart";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface ProductDetailsProps {
   product: Product;
 }
 
 export function ProductDetails({ product }: ProductDetailsProps) {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
   if (!product.name || !product.description || !product.imageUrl) {
     return <div>商品情報が見つかりません</div>;
   }
+
+  const handleAddToCart = async () => {
+    try {
+      setLoading(true);
+      await addToCart(product.id);
+      router.push("/cart");
+    } catch (error) {
+      if (error instanceof Error && error.message === "ログインが必要です") {
+        router.push("/sign-in");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
@@ -45,8 +68,17 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             </p>
             <p className="text-sm text-gray-500">在庫: {product.stock} 個</p>
           </div>
-          <Button className="w-full" size="lg">
-            カートに追加
+          <Button
+            className="w-full"
+            size="lg"
+            onClick={handleAddToCart}
+            disabled={loading}
+          >
+            {loading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              "カートに追加"
+            )}
           </Button>
         </div>
       </CardContent>

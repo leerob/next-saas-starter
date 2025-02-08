@@ -180,7 +180,12 @@ export async function getCartForUser(userId: number) {
 
 export async function getCartItems(cartId: number) {
   if (USE_MOCK) {
-    return mockCartItems.filter((item) => item.cartId === cartId);
+    return mockCartItems
+      .filter((item) => item.cartId === cartId)
+      .map((item) => ({
+        ...item,
+        product: mockProducts.find((p) => p.id === item.productId)!,
+      }));
   }
 
   return await db
