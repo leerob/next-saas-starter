@@ -2,21 +2,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { signToken, verifyToken } from "@/lib/auth/session";
 
-const publicRoutes = ["/", "/home", "/sign-in", "/sign-up"];
-const protectedRoutes = ["/products", "/cart", "/checkout"];
+const protectedRoutes = ["/cart"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const sessionCookie = request.cookies.get("session");
-  const isPublicRoute = publicRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
-  );
-
-  console.log(
-    `middleware. pathname: ${pathname}, sessconCookie: ${sessionCookie}, isPublicRoute: ${isPublicRoute}, isProtectedRoute: ${isProtectedRoute}`
   );
 
   // 保護されたルートでセッションがない場合
@@ -31,8 +23,8 @@ export async function middleware(request: NextRequest) {
 
   let res = NextResponse.next();
 
-  // セッションの更新処理
-  if (sessionCookie) {
+  // セッションの更新処理（保護されたルートの場合のみ）
+  if (sessionCookie && isProtectedRoute) {
     try {
       const parsed = await verifyToken(sessionCookie.value);
       const expiresInOneDay = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -51,9 +43,7 @@ export async function middleware(request: NextRequest) {
     } catch (error) {
       console.error("Error updating session:", error);
       res.cookies.delete("session");
-      if (isProtectedRoute) {
-        return NextResponse.redirect(new URL("/sign-in", request.url));
-      }
+      return NextResponse.redirect(new URL("/sign-in", request.url));
     }
   }
 
