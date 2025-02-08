@@ -17,19 +17,6 @@ export function Nav() {
               Online Shop
             </span>
           </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
-            <Link
-              href="/products"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                pathname === "/products"
-                  ? "text-foreground"
-                  : "text-foreground/60"
-              )}
-            >
-              Products
-            </Link>
-          </nav>
         </div>
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <nav className="flex items-center">
