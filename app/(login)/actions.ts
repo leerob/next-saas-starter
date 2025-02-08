@@ -59,7 +59,7 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
 
   if (USE_MOCK) {
     await setSession(mockUser);
-    redirect("/");
+    redirect("/home");
   }
 
   const userWithTeam = await db
