@@ -8,8 +8,10 @@ interface ProductPageProps {
   };
 }
 
-export default function ProductPage({ params }: ProductPageProps) {
-  const product = mockProducts.find((p) => p.id === parseInt(params.id));
+export default async function ProductPage({ params }: ProductPageProps) {
+  const resolvedParams = await params;
+  const id = parseInt(resolvedParams.id);
+  const product = mockProducts.find((p) => p.id === id);
 
   if (!product) {
     notFound();
