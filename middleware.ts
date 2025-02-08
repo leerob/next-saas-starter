@@ -2,19 +2,36 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { signToken, verifyToken } from "@/lib/auth/session";
 
-const protectedRoutes = "/";
+const publicRoutes = ["/", "/home", "/sign-in", "/sign-up"];
+const protectedRoutes = ["/products", "/cart", "/checkout"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const sessionCookie = request.cookies.get("session");
-  const isProtectedRoute = pathname.startsWith(protectedRoutes);
+  const isPublicRoute = publicRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
 
+  console.log(
+    `middleware. pathname: ${pathname}, sessconCookie: ${sessionCookie}, isPublicRoute: ${isPublicRoute}, isProtectedRoute: ${isProtectedRoute}`
+  );
+
+  // 保護されたルートでセッションがない場合
   if (isProtectedRoute && !sessionCookie) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
+  // 認証ルートにセッションがある場合はリダイレクト
+  if ((pathname === "/sign-in" || pathname === "/sign-up") && sessionCookie) {
+    return NextResponse.redirect(new URL("/home", request.url));
+  }
+
   let res = NextResponse.next();
 
+  // セッションの更新処理
   if (sessionCookie) {
     try {
       const parsed = await verifyToken(sessionCookie.value);
