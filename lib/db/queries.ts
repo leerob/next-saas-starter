@@ -8,14 +8,25 @@ import {
   carts,
   cartItems,
   products,
+  Cart,
+  CartItem,
+  Product,
+  User,
 } from "./schema";
 import { cookies } from "next/headers";
-import { verifyToken } from "@/lib/auth/session";
-import { mockProducts } from "@/lib/mock/products";
-import { mockUser } from "@/lib/mock/user";
-import { mockCarts, mockCartItems } from "@/lib/mock/cart";
-
-const USE_MOCK = process.env.USE_MOCK === "true";
+import { verifyToken } from "../auth/session";
+import { mockUser } from "../mock/user";
+import { mockProducts } from "../mock/products";
+import {
+  getMockCart,
+  createMockCart,
+  getMockCartItems,
+  addMockCartItem,
+  updateMockCartItemQuantity,
+  removeMockCartItem,
+  clearMockCart,
+} from "../mock/cart";
+import { USE_MOCK } from "../config";
 
 export async function getUser() {
   const sessionCookie = (await cookies()).get("session");
@@ -164,9 +175,9 @@ export async function getProductById(id: number) {
   return result[0] ?? null;
 }
 
-export async function getCartForUser(userId: number) {
+export async function getCartForUser(userId: number): Promise<Cart | null> {
   if (USE_MOCK) {
-    return mockCarts.find((cart) => cart.userId === userId) ?? null;
+    return getMockCart(userId);
   }
 
   const result = await db
@@ -178,14 +189,11 @@ export async function getCartForUser(userId: number) {
   return result[0] ?? null;
 }
 
-export async function getCartItems(cartId: number) {
+export async function getCartItems(
+  cartId: number
+): Promise<(CartItem & { product: Product | null })[]> {
   if (USE_MOCK) {
-    return mockCartItems
-      .filter((item) => item.cartId === cartId)
-      .map((item) => ({
-        ...item,
-        product: mockProducts.find((p) => p.id === item.productId)!,
-      }));
+    return getMockCartItems(cartId);
   }
 
   return await db
@@ -203,17 +211,9 @@ export async function getCartItems(cartId: number) {
     .where(eq(cartItems.cartId, cartId));
 }
 
-export async function createCart(userId: number) {
+export async function createCart(userId: number): Promise<Cart> {
   if (USE_MOCK) {
-    const newCart = {
-      id: mockCarts.length + 1,
-      userId,
-      status: "active",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    mockCarts.push(newCart);
-    return newCart;
+    return createMockCart(userId);
   }
 
   const result = await db
@@ -230,29 +230,10 @@ export async function createCart(userId: number) {
 export async function addToCart(
   cartId: number,
   productId: number,
-  quantity: number
-) {
+  quantity: number = 1
+): Promise<CartItem> {
   if (USE_MOCK) {
-    const existingItem = mockCartItems.find(
-      (item) => item.cartId === cartId && item.productId === productId
-    );
-
-    if (existingItem) {
-      existingItem.quantity += quantity;
-      existingItem.updatedAt = new Date();
-      return existingItem;
-    }
-
-    const newItem = {
-      id: mockCartItems.length + 1,
-      cartId,
-      productId,
-      quantity,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    mockCartItems.push(newItem);
-    return newItem;
+    return addMockCartItem(cartId, productId, quantity);
   }
 
   const existingItem = await db
@@ -292,15 +273,9 @@ export async function addToCart(
 export async function updateCartItemQuantity(
   cartItemId: number,
   quantity: number
-) {
+): Promise<CartItem> {
   if (USE_MOCK) {
-    const item = mockCartItems.find((item) => item.id === cartItemId);
-    if (item) {
-      item.quantity = quantity;
-      item.updatedAt = new Date();
-      return item;
-    }
-    return null;
+    return updateMockCartItemQuantity(cartItemId, quantity);
   }
 
   const result = await db
@@ -315,13 +290,9 @@ export async function updateCartItemQuantity(
   return result[0] ?? null;
 }
 
-export async function removeFromCart(cartItemId: number) {
+export async function removeFromCart(cartItemId: number): Promise<void> {
   if (USE_MOCK) {
-    const index = mockCartItems.findIndex((item) => item.id === cartItemId);
-    if (index !== -1) {
-      mockCartItems.splice(index, 1);
-    }
-    return;
+    return removeMockCartItem(cartItemId);
   }
 
   await db.delete(cartItems).where(eq(cartItems.id, cartItemId));
@@ -329,11 +300,7 @@ export async function removeFromCart(cartItemId: number) {
 
 export async function clearCart(cartId: number) {
   if (USE_MOCK) {
-    const cartIndex = mockCartItems.findIndex((item) => item.cartId === cartId);
-    if (cartIndex !== -1) {
-      mockCartItems.splice(cartIndex);
-    }
-    return;
+    return clearMockCart(cartId);
   }
 
   await db.delete(cartItems).where(eq(cartItems.cartId, cartId));

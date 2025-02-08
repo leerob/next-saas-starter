@@ -8,6 +8,7 @@ import { formatPrice } from "@/lib/utils";
 import { useState } from "react";
 import { updateCartItemQuantity, removeFromCart } from "@/app/actions/cart";
 import { Loader2, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface CartItemsProps {
   items: (CartItem & {
@@ -17,18 +18,21 @@ interface CartItemsProps {
 
 export function CartItems({ items }: CartItemsProps) {
   const [loading, setLoading] = useState<number | null>(null);
+  const router = useRouter();
 
   const handleQuantityChange = async (itemId: number, quantity: number) => {
     if (quantity < 1) return;
     setLoading(itemId);
     await updateCartItemQuantity(itemId, quantity);
     setLoading(null);
+    router.refresh();
   };
 
   const handleRemove = async (itemId: number) => {
     setLoading(itemId);
     await removeFromCart(itemId);
     setLoading(null);
+    router.refresh();
   };
 
   if (items.length === 0) {
