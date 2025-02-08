@@ -194,6 +194,8 @@ export async function getCartItems(cartId: number) {
       cartId: cartItems.cartId,
       productId: cartItems.productId,
       quantity: cartItems.quantity,
+      createdAt: cartItems.createdAt,
+      updatedAt: cartItems.updatedAt,
       product: products,
     })
     .from(cartItems)
