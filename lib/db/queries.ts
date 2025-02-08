@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { verifyToken } from "@/lib/auth/session";
 import { products } from "@/lib/db/schema";
 import { mockProducts } from "@/lib/mock/products";
+import { mockUser } from "@/lib/mock/user";
 
 const USE_MOCK = process.env.USE_MOCK === "true";
 
@@ -25,6 +26,10 @@ export async function getUser() {
 
   if (new Date(sessionData.expires) < new Date()) {
     return null;
+  }
+
+  if (USE_MOCK) {
+    return mockUser; // 開発用のモックユーザーを返す
   }
 
   const user = await db
