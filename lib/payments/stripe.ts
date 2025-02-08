@@ -6,44 +6,103 @@ import {
   getUser,
   updateTeamSubscription,
 } from "@/lib/db/queries";
+import { getCartItems } from "@/lib/db/queries/cart";
+import {
+  createOrder,
+  createOrderItems,
+  updateOrderStatus,
+} from "@/lib/db/queries/orders";
+import type { Cart, CartItem, Product } from "@/lib/db/schema";
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-01-27.acacia",
 });
 
 export async function createCheckoutSession({
-  team,
-  priceId,
+  userId,
+  cart,
+  cartItems,
 }: {
-  team: Team | null;
-  priceId: string;
+  userId: number;
+  cart: Cart;
+  cartItems: (CartItem & { product: Product | null })[];
 }) {
-  const user = await getUser();
-
-  if (!team || !user) {
-    redirect(`/sign-up?redirect=checkout&priceId=${priceId}`);
+  if (!cart || cartItems.length === 0) {
+    redirect("/cart");
   }
+
+  const lineItems = cartItems
+    .filter((item) => item.product !== null)
+    .map((item) => ({
+      price_data: {
+        currency: item.product!.currency.toLowerCase(),
+        product_data: {
+          name: item.product!.name,
+          description: item.product!.description || undefined,
+          images: item.product!.imageUrl ? [item.product!.imageUrl] : undefined,
+        },
+        unit_amount: Number(item.product!.price) * 100, // Stripeは金額をセントで扱うため100倍する
+      },
+      quantity: item.quantity,
+    }));
+
+  const totalAmount = cartItems.reduce(
+    (sum, item) => sum + Number(item.product!.price) * item.quantity,
+    0
+  );
+
+  const order = await createOrder({
+    userId,
+    status: "pending",
+    totalAmount: totalAmount.toString(),
+    currency: "JPY",
+    stripeSessionId: null,
+    stripePaymentIntentId: null,
+    shippingAddress: null,
+  });
+
+  await createOrderItems(
+    cartItems.map((item) => ({
+      orderId: order.id,
+      productId: item.productId,
+      quantity: item.quantity,
+      price: item.product!.price,
+      currency: item.product!.currency,
+    }))
+  );
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
-    line_items: [
-      {
-        price: priceId,
-        quantity: 1,
-      },
-    ],
-    mode: "subscription",
+    line_items: lineItems,
+    mode: "payment",
     success_url: `${process.env.BASE_URL}/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.BASE_URL}/pricing`,
-    customer: team.stripeCustomerId || undefined,
-    client_reference_id: user.id.toString(),
-    allow_promotion_codes: true,
-    subscription_data: {
-      trial_period_days: 14,
+    cancel_url: `${process.env.BASE_URL}/cart`,
+    metadata: {
+      orderId: order.id.toString(),
     },
   });
 
+  await updateOrderStatus(order.id, "pending", null, session.id);
+
   redirect(session.url!);
+}
+
+export async function handlePaymentSuccess(session: Stripe.Checkout.Session) {
+  const orderId = Number(session.metadata?.orderId);
+  if (!orderId) {
+    throw new Error("No order ID found in session metadata.");
+  }
+
+  await updateOrderStatus(orderId, "paid", session.payment_intent as string);
+}
+
+export async function handlePaymentFailure(session: Stripe.Checkout.Session) {
+  const orderId = Number(session.metadata?.orderId);
+  if (!orderId) {
+    throw new Error("No order ID found in session metadata.");
+  }
+
+  await updateOrderStatus(orderId, "failed");
 }
 
 export async function createCustomerPortalSession(team: Team) {
