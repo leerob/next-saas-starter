@@ -3,32 +3,16 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CartItem } from "@/lib/db/schema";
-import { Product } from "@/lib/db/schema";
+import { CartItem, Product } from "@/lib/db/schema";
 import { formatPrice } from "@/lib/utils";
 import { useState } from "react";
 import { updateCartItemQuantity, removeFromCart } from "@/app/actions/cart";
 import { Loader2, Trash2 } from "lucide-react";
 
 interface CartItemsProps {
-  items: {
-    id: number;
-    cartId: number;
-    productId: number;
-    quantity: number;
-    product: {
-      id: number;
-      name: string;
-      description: string | null;
-      price: string;
-      currency: string;
-      imageUrl: string | null;
-      stock: number;
-      createdAt: Date;
-      updatedAt: Date;
-      deletedAt: Date | null;
-    } | null;
-  }[];
+  items: (CartItem & {
+    product: Product | null;
+  })[];
 }
 
 export function CartItems({ items }: CartItemsProps) {

@@ -6,24 +6,9 @@ import { formatPrice } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 interface CartSummaryProps {
-  items: {
-    id: number;
-    cartId: number;
-    productId: number;
-    quantity: number;
-    product: {
-      id: number;
-      name: string;
-      description: string | null;
-      price: string;
-      currency: string;
-      imageUrl: string | null;
-      stock: number;
-      createdAt: Date;
-      updatedAt: Date;
-      deletedAt: Date | null;
-    } | null;
-  }[];
+  items: (CartItem & {
+    product: Product | null;
+  })[];
 }
 
 export function CartSummary({ items }: CartSummaryProps) {
