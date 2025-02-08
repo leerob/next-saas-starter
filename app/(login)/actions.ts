@@ -232,6 +232,11 @@ export const signUp = validatedAction(signUpSchema, async (data, formData) => {
 });
 
 export async function signOut() {
+  console.log("signOut");
+  if (USE_MOCK) {
+    console.log("signOut mock");
+    redirect("/sign-in");
+  }
   const user = (await getUser()) as User;
   const userWithTeam = await getUserWithTeam(user.id);
   await logActivity(userWithTeam?.teamId, user.id, ActivityType.SIGN_OUT);
