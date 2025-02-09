@@ -32,11 +32,17 @@ export async function createCheckoutSession({
     redirect("/cart");
   }
 
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + Number(item.product!.price) * item.quantity,
+    0
+  );
+
+  const { total } = calculateOrderAmount(subtotal);
+
   const lineItems = cartItems
     .filter((item) => item.product !== null)
     .map((item) => {
-      const price = Number(item.product!.price);
-      const unitAmount = Math.round(price * (1 + 0.1)) * 100; // 消費税を含めた金額（セント単位）
+      const priceWithTax = Math.round(Number(item.product!.price) * 1.1);
       return {
         price_data: {
           currency: item.product!.currency.toLowerCase(),
@@ -47,18 +53,11 @@ export async function createCheckoutSession({
               ? [item.product!.imageUrl]
               : undefined,
           },
-          unit_amount: unitAmount,
+          unit_amount: priceWithTax,
         },
         quantity: item.quantity,
       };
     });
-
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + Number(item.product!.price) * item.quantity,
-    0
-  );
-
-  const { total } = calculateOrderAmount(subtotal);
 
   const order = await createOrder({
     userId,
