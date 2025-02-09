@@ -13,6 +13,7 @@ import {
   updateOrderStatus,
 } from "@/lib/db/queries/orders";
 import type { Cart, CartItem, Product } from "@/lib/db/schema";
+import { calculateOrderAmount } from "@/lib/utils";
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-01-27.acacia",
@@ -33,28 +34,36 @@ export async function createCheckoutSession({
 
   const lineItems = cartItems
     .filter((item) => item.product !== null)
-    .map((item) => ({
-      price_data: {
-        currency: item.product!.currency.toLowerCase(),
-        product_data: {
-          name: item.product!.name,
-          description: item.product!.description || undefined,
-          images: item.product!.imageUrl ? [item.product!.imageUrl] : undefined,
+    .map((item) => {
+      const price = Number(item.product!.price);
+      const unitAmount = Math.round(price * (1 + 0.1)) * 100; // 消費税を含めた金額（セント単位）
+      return {
+        price_data: {
+          currency: item.product!.currency.toLowerCase(),
+          product_data: {
+            name: item.product!.name,
+            description: item.product!.description || undefined,
+            images: item.product!.imageUrl
+              ? [item.product!.imageUrl]
+              : undefined,
+          },
+          unit_amount: unitAmount,
         },
-        unit_amount: Number(item.product!.price) * 100, // Stripeは金額をセントで扱うため100倍する
-      },
-      quantity: item.quantity,
-    }));
+        quantity: item.quantity,
+      };
+    });
 
-  const totalAmount = cartItems.reduce(
+  const subtotal = cartItems.reduce(
     (sum, item) => sum + Number(item.product!.price) * item.quantity,
     0
   );
 
+  const { total } = calculateOrderAmount(subtotal);
+
   const order = await createOrder({
     userId,
     status: "pending",
-    totalAmount: totalAmount.toString(),
+    totalAmount: total.toString(),
     currency: "JPY",
     stripeSessionId: null,
     stripePaymentIntentId: null,

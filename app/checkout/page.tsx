@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, calculateOrderAmount } from "@/lib/utils";
 
 export default async function CheckoutPage() {
   const session = await getSession();
@@ -28,10 +28,12 @@ export default async function CheckoutPage() {
     redirect("/cart");
   }
 
-  const total = cartItems.reduce((acc, item) => {
+  const subtotal = cartItems.reduce((acc, item) => {
     if (!item.product) return acc;
     return acc + Number(item.product.price) * item.quantity;
   }, 0);
+
+  const { tax, total } = calculateOrderAmount(subtotal);
 
   async function handleCheckout() {
     "use server";
@@ -81,11 +83,22 @@ export default async function CheckoutPage() {
               </div>
             ))}
           </div>
-        </CardContent>
-        <CardFooter className="justify-between">
-          <div className="text-lg font-semibold">
-            合計: {formatPrice(total, "JPY")}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <div>小計</div>
+              <div>{formatPrice(subtotal, "JPY")}</div>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <div>消費税（10%）</div>
+              <div>{formatPrice(tax, "JPY")}</div>
+            </div>
+            <div className="flex items-center justify-between border-t pt-2 text-lg font-semibold">
+              <div>合計</div>
+              <div>{formatPrice(total, "JPY")}</div>
+            </div>
           </div>
+        </CardContent>
+        <CardFooter className="justify-end">
           <form action={handleCheckout}>
             <Button type="submit" size="lg">
               注文を確定する
