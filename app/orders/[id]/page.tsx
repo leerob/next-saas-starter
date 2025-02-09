@@ -4,17 +4,20 @@ import { getOrderById, getOrderItems } from "@/lib/db/queries/orders";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatPrice } from "@/lib/utils";
 
+interface OrderDetailPageProps {
+  params: Promise<{ id: string }>;
+}
+
 export default async function OrderDetailPage({
   params,
-}: {
-  params: { id: string };
-}) {
+}: OrderDetailPageProps) {
   const session = await getSession();
   if (!session?.user) {
     redirect("/sign-in");
   }
 
-  const orderId = parseInt(params.id);
+  const { id } = await params;
+  const orderId = parseInt(id);
   const order = await getOrderById(orderId);
 
   if (!order) {
