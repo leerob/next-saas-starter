@@ -29,6 +29,11 @@ export default async function OrderDetailPage({
     redirect("/orders");
   }
 
+  // 支払い済みの注文のみ表示
+  if (order.status !== "paid") {
+    redirect("/orders");
+  }
+
   const orderItems = await getOrderItems(orderId);
 
   return (
@@ -43,12 +48,8 @@ export default async function OrderDetailPage({
             <div>{order.id}</div>
           </div>
           <div className="flex items-center justify-between">
-            <div>注文状態</div>
-            <div>
-              {order.status === "pending" && "支払い待ち"}
-              {order.status === "paid" && "支払い完了"}
-              {order.status === "failed" && "支払い失敗"}
-            </div>
+            <div>注文日時</div>
+            <div>{new Date(order.createdAt).toLocaleDateString("ja-JP")}</div>
           </div>
           <div className="space-y-4">
             {orderItems.map((item) => (

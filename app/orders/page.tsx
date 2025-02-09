@@ -12,6 +12,8 @@ export default async function OrdersPage() {
   }
 
   const orders = await getOrdersByUserId(session.user.id);
+  // 支払い済みの注文のみを表示
+  const completedOrders = orders.filter((order) => order.status === "paid");
 
   return (
     <div className="container max-w-2xl py-24">
@@ -20,12 +22,12 @@ export default async function OrdersPage() {
           <CardTitle>注文履歴</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          {orders.length === 0 ? (
+          {completedOrders.length === 0 ? (
             <div className="text-center text-gray-500">
               注文履歴がありません
             </div>
           ) : (
-            orders.map((order) => (
+            completedOrders.map((order) => (
               <Link
                 key={order.id}
                 href={`/orders/${order.id}`}
@@ -42,11 +44,7 @@ export default async function OrdersPage() {
                     <div className="font-medium">
                       {formatPrice(Number(order.totalAmount), order.currency)}
                     </div>
-                    <div className="text-sm text-right">
-                      {order.status === "pending" && "支払い待ち"}
-                      {order.status === "paid" && "支払い完了"}
-                      {order.status === "failed" && "支払い失敗"}
-                    </div>
+                    <div className="text-sm text-right">支払い完了</div>
                   </div>
                 </div>
               </Link>
