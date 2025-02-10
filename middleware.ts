@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { signToken, verifyToken } from "@/lib/auth/session";
+import { createToken, verifyToken } from "@/lib/auth/session";
 
 const protectedRoutes = ["/cart"];
 
@@ -13,11 +13,11 @@ export async function middleware(request: NextRequest) {
 
   // 保護されたルートでセッションがない場合
   if (isProtectedRoute && !sessionCookie) {
-    return NextResponse.redirect(new URL("/sign-in", request.url));
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   // 認証ルートにセッションがある場合はリダイレクト
-  if ((pathname === "/sign-in" || pathname === "/sign-up") && sessionCookie) {
+  if ((pathname === "/login" || pathname === "/sign-up") && sessionCookie) {
     return NextResponse.redirect(new URL("/home", request.url));
   }
 
@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
 
       res.cookies.set({
         name: "session",
-        value: await signToken({
+        value: await createToken({
           ...parsed,
           expires: expiresInOneDay.toISOString(),
         }),
@@ -43,7 +43,7 @@ export async function middleware(request: NextRequest) {
     } catch (error) {
       console.error("Error updating session:", error);
       res.cookies.delete("session");
-      return NextResponse.redirect(new URL("/sign-in", request.url));
+      return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 

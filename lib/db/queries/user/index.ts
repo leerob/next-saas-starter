@@ -1,6 +1,6 @@
 import { and, eq, isNull } from "drizzle-orm";
 import { db } from "../../drizzle";
-import { users, teamMembers } from "../../schema";
+import { users } from "../../schema";
 import { cookies } from "next/headers";
 import { verifyToken } from "../../../auth/session";
 import { mockUser } from "../../../mock/user";
@@ -38,16 +38,30 @@ export async function getUser() {
   return user.length === 0 ? null : user[0];
 }
 
-export async function getUserWithTeam(userId: number) {
-  const result = await db
-    .select({
-      user: users,
-      teamId: teamMembers.teamId,
+export async function updateUserSubscription(
+  userId: number,
+  subscriptionData: {
+    stripeSubscriptionId: string | null;
+    stripeProductId: string | null;
+    planName: string | null;
+    subscriptionStatus: string;
+  }
+) {
+  await db
+    .update(users)
+    .set({
+      ...subscriptionData,
+      updatedAt: new Date(),
     })
+    .where(eq(users.id, userId));
+}
+
+export async function getUserByStripeCustomerId(customerId: string) {
+  const result = await db
+    .select()
     .from(users)
-    .leftJoin(teamMembers, eq(users.id, teamMembers.userId))
-    .where(eq(users.id, userId))
+    .where(eq(users.stripeCustomerId, customerId))
     .limit(1);
 
-  return result[0];
+  return result.length > 0 ? result[0] : null;
 }
