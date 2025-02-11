@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   experimental: {
     ppr: true,
     newDevOverlay: true
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' 
   }
 };
 
